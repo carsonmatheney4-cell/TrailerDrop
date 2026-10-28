@@ -1,38 +1,6 @@
 {
-  "updated": "2026-10-28T21:27:42.058438+00:00",
+  "updated": "2026-10-28T21:31:08.939913+00:00",
   "videos": [
-    {
-      "title": "New I PLAY ROCKY Trailer Tells the Awesome Underdog Story of Sylvester Stallone Making ROCKY",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/new-i-play-rocky-trailer-tells-the-awesome-underdog-story-of-sylvester-stallone-making-rocky",
-      "videoId": "jq5oCjhQtIc",
-      "published": "2026-10-28T21:27:41.799470+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "TANGLES First Teaser Reveals a Beautiful and Heartbreaking Animated Film About Alzheimer's",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/tangles-first-teaser-reveals-a-beautiful-and-heartbreaking-animated-film-about-alzheimers",
-      "videoId": "mdGrH_f4wJw",
-      "published": "2026-10-28T21:27:41.799165+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "Review: JACKBOX PARTY PACK 12 Offers a Ton of Laughs",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/review-jackbox-party-pack-12-offers-a-ton-of-laughs",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.798677+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "THE PRESTIGE Returns! Watch the Teaser Trailer for Christopher Nolan’s 2027 IMAX Re-Release",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/the-prestige-returns-watch-the-teaser-trailer-for-christopher-nolans-2027-imax-re-release",
-      "videoId": "IK4ExT-KZUM",
-      "published": "2026-10-28T21:27:41.798566+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
     {
       "title": "STREET FIGHTER Cast Has a Fun Time Screwing Around in Official Blooper Reel",
       "category": "Gaming",
@@ -42,59 +10,131 @@
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "Retro Trailer for George C. Scott's Classic 1980 Haunted House Horror Film THE CHANGELING",
+      "title": "Jennifer Lawrence Confronts Crew Members Who Invaded Her Nude Scene",
+      "category": "Movie Trailers",
+      "link": "https://www.comingsoon.net/movies/news/2214488-jennifer-lawrence-confronts-crew-members-nude-scene",
+      "videoId": "PXagY52HcYQ",
+      "published": "2026-10-28T21:19:56+00:00",
+      "source": "https://www.comingsoon.net/feed"
+    },
+    {
+      "title": "Colin Farrell’s Emotional The Slightest Touch HBO Max Trailer Will Make You Cry",
+      "category": "Movie Trailers",
+      "link": "https://www.comingsoon.net/movies/trailers/2214512-colin-farrell-pushes-friends-wheelchair-marathon-finish-slightest-touch-trailer",
+      "videoId": "ApBoWNQF7c4",
+      "published": "2026-10-28T21:19:46+00:00",
+      "source": "https://www.comingsoon.net/feed"
+    },
+    {
+      "title": "Greta Gerwig’s Narnia: The Magician’s Nephew lands PG rating",
+      "category": "Movie Trailers",
+      "link": "https://www.joblo.com/narnia-the-magicians-nephew-rating/",
+      "videoId": "YBhgErH84Z0",
+      "published": "2026-10-28T21:08:54+00:00",
+      "source": "https://www.joblo.com/feed/"
+    },
+    {
+      "title": "Amy Poehler Leads a Team of Archeologists in Trailer for Peacock Comedy Series DIG",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/retro-trailer-for-george-c-scotts-classic-1980-haunted-house-horror-film-the-changeling",
-      "videoId": "UwUI7d5TgGA",
-      "published": "2026-10-28T21:27:41.798104+00:00",
+      "link": "https://geektyrant.com/news/amy-poehler-leads-a-team-of-archeologists-in-trailer-for-peacock-comedy-series-dig",
+      "videoId": "ir2zni8_tP4",
+      "published": "2026-10-28T21:00:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "Two Young Manga Artists Chase Their Dreams in Trailer for Live-Action LOOK BACK",
+      "title": "Frasier Star Feels Guilty About Controversial Fat Suit Storyline: ‘It Was Normalized’",
+      "category": "Movie Trailers",
+      "link": "https://www.comingsoon.net/tv/news/2214444-jane-leeves-frasier-fat-suit-pregnancy-storyline",
+      "videoId": "oK95ZEv9RX8",
+      "published": "2026-10-28T20:58:41+00:00",
+      "source": "https://www.comingsoon.net/feed"
+    },
+    {
+      "title": "Chris Hansen Invites Robert Pattinson Onto His Show to Discuss Primetime Discourse",
+      "category": "Movie Trailers",
+      "link": "https://www.comingsoon.net/movies/news/2214543-robert-pattinson-chris-hansen-have-a-seat-invitation-primetime",
+      "videoId": "5fHXyqQOKL8",
+      "published": "2026-10-28T20:50:19+00:00",
+      "source": "https://www.comingsoon.net/feed"
+    },
+    {
+      "title": "Popular Bong Joon Ho Movie That Parasite Fans Love Gets New Trailer for 4K Theatrical Rerelease",
+      "category": "Movie Trailers",
+      "link": "https://www.comingsoon.net/movies/news/2214463-popular-bong-joon-ho-movie-parasite-fans-love-trailer-4k-theatrical-rerelease",
+      "videoId": "0Zq5fL6BQjw",
+      "published": "2026-10-28T20:35:41+00:00",
+      "source": "https://www.comingsoon.net/feed"
+    },
+    {
+      "title": "GTA 6’s Jason & Lucia Cast Get Advice From Beloved Trevor, Michael, & Franklin Voice Actors",
+      "category": "Movie Trailers",
+      "link": "https://www.comingsoon.net/games/news/2214362-gta-6-jason-lucia-advice-gta-v-actors",
+      "videoId": "bQxZZDdUb18",
+      "published": "2026-10-28T20:01:32+00:00",
+      "source": "https://www.comingsoon.net/feed"
+    },
+    {
+      "title": "Michael Keaton’s Batman Returns Batmobile & More Iconic DC Props Could Be Yours to Own",
+      "category": "Movie Trailers",
+      "link": "https://www.comingsoon.net/movies/news/2214464-batman-returns-batmobile-movie-memorabilia-auction",
+      "videoId": "PBvEnpwGpyw",
+      "published": "2026-10-28T19:59:24+00:00",
+      "source": "https://www.comingsoon.net/feed"
+    },
+    {
+      "title": "Parks and Rec Meets The Good Place in the Hilarious First Trailer for Amy Poehler’s Dig!",
+      "category": "Movie Trailers",
+      "link": "https://www.joblo.com/dig-trailer-amy-poehler-comedy-series/",
+      "videoId": "BYHL1lHCJSk",
+      "published": "2026-10-28T17:53:13+00:00",
+      "source": "https://www.joblo.com/feed/"
+    },
+    {
+      "title": "New JUMANJI: OPEN WORLD Trailer Brings the Game Into the Real World for One Final Adventure",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/two-young-artists-chase-their-dreams-in-the-us-trailer-for-live-action-look-back",
-      "videoId": "ILBDFlYMGAY",
-      "published": "2026-10-28T21:27:41.797269+00:00",
+      "link": "https://geektyrant.com/news/new-jumanji-open-world-trailer-brings-the-game-into-the-real-world-for-one-final-adventure",
+      "videoId": "nIw1O3zvOfE",
+      "published": "2026-10-28T15:57:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "New AVENGERS: DOOMSDAY TV Spot Reveals Fresh Footage, the Return of the Bifrost, and More Avengers Banter",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/new-avengers-doomsday-tv-spot-reveals-fresh-footage-the-return-of-the-bifrost-and-more-avengers-banter",
-      "videoId": "UfNu7pcR0e8",
-      "published": "2026-10-28T21:27:41.796932+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
+      "title": "Netflix unveils a new trailer for the six-part Pride and Prejudice series",
+      "category": "Movie Trailers",
+      "link": "https://www.joblo.com/pride-and-prejudice-trailer-new/",
+      "videoId": "a2wKMCiyQNY",
+      "published": "2026-10-28T15:55:59+00:00",
+      "source": "https://www.joblo.com/feed/"
     },
     {
-      "title": "ELDEN RING Movie Reportedly Has a Massive $200 Million Budget From A24",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/elden-ring-movie-reportedly-has-a-massive-200-million-budget-from-a24",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.796658+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
+      "title": "Pedro Pascal goes on a musical journey in the new trailer for Behemoth!",
+      "category": "Movie Trailers",
+      "link": "https://www.joblo.com/behemoth-trailer-new/",
+      "videoId": "U7RWQX1Kc2A",
+      "published": "2026-10-28T14:48:18+00:00",
+      "source": "https://www.joblo.com/feed/"
     },
     {
-      "title": "Elon Musk Challenges Christopher Nolan With an AI-Generated THE ODYSSEY That’s More Style Than Substance",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/elon-musk-challenges-christopher-nolan-with-an-ai-generated-the-odyssey-thats-more-style-than-substance",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.795773+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
+      "title": "Worlds collide during the final game in the new trailer for Jumanji: Open World",
+      "category": "Movie Trailers",
+      "link": "https://www.joblo.com/jumanji-open-world-trailer-new/",
+      "videoId": "GfRfgzvmWtw",
+      "published": "2026-10-28T13:33:52+00:00",
+      "source": "https://www.joblo.com/feed/"
     },
     {
-      "title": "Inde Navarrette Reveals the Video Game Movie She “Definitely” Wants to Star In",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/inde-navarrette-reveals-the-video-game-movie-she-definitely-wants-to-star-in",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.795447+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
+      "title": "Danielle Harris documentary explores the life of the Halloween scream queen",
+      "category": "Movie Trailers",
+      "link": "https://www.joblo.com/danielle-harris-documentary/",
+      "videoId": "XAb9b0jztqk",
+      "published": "2026-10-28T13:22:00+00:00",
+      "source": "https://www.joblo.com/feed/"
     },
     {
-      "title": "A Christmas-Obsessed Dad Turns Kidnapper in the Twisted RALPH’S PERFEKT CHRISTMAS Trailer",
+      "title": "Final DUNE: PART THREE Trailer Teases an Epic Conclusion to Denis Villeneuve’s Sci-Fi Trilogy",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/a-christmas-obsessed-dad-turns-kidnapper-in-the-twisted-ralphs-perfekt-christmas-trailer",
-      "videoId": "jprFrdLew28",
-      "published": "2026-10-28T21:27:41.795219+00:00",
+      "link": "https://geektyrant.com/news/final-dune-part-three-trailer-teases-an-epic-conclusion-to-denis-villeneuves-sci-fi-trilogy",
+      "videoId": "uJqaGLmZpGo",
+      "published": "2026-10-27T16:28:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
@@ -102,432 +142,72 @@
       "category": "Gaming",
       "link": "https://geektyrant.com/news/becky-takes-on-the-fourth-reich-in-new-trailer-for-the-last-temptation-of-becky",
       "videoId": "QuooYjAt-XE",
-      "published": "2026-10-28T21:27:41.795079+00:00",
+      "published": "2026-10-27T11:59:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "Charlie Cox’s Daredevil Isn’t Done Yet, Insider Teases What’s Next After BORN AGAIN",
+      "title": "A Christmas-Obsessed Dad Turns Kidnapper in the Twisted RALPH’S PERFEKT CHRISTMAS Trailer",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/charlie-coxs-daredevil-isnt-done-yet-insider-teases-whats-next-after-born-again",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.794949+00:00",
+      "link": "https://geektyrant.com/news/a-christmas-obsessed-dad-turns-kidnapper-in-the-twisted-ralphs-perfekt-christmas-trailer",
+      "videoId": "jprFrdLew28",
+      "published": "2026-10-27T10:00:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "Did Marvel Alter Chris Evans' Face? AVENGERS: DOOMSDAY Fans Spot Something Strange in New TV Spot",
+      "title": "New AVENGERS: DOOMSDAY TV Spot Reveals Fresh Footage, the Return of the Bifrost, and More Avengers Banter",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/did-marvel-alter-chris-evans-face-avengers-doomsday-fans-spot-something-strange-in-new-tv-spot",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.794714+00:00",
+      "link": "https://geektyrant.com/news/new-avengers-doomsday-tv-spot-reveals-fresh-footage-the-return-of-the-bifrost-and-more-avengers-banter",
+      "videoId": "UfNu7pcR0e8",
+      "published": "2026-10-26T13:30:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "Final DUNE: PART THREE Trailer Teases an Epic Conclusion to Denis Villeneuve’s Sci-Fi Trilogy",
+      "title": "Two Young Manga Artists Chase Their Dreams in Trailer for Live-Action LOOK BACK",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/final-dune-part-three-trailer-teases-an-epic-conclusion-to-denis-villeneuves-sci-fi-trilogy",
-      "videoId": "uJqaGLmZpGo",
-      "published": "2026-10-28T21:27:41.794126+00:00",
+      "link": "https://geektyrant.com/news/two-young-artists-chase-their-dreams-in-the-us-trailer-for-live-action-look-back",
+      "videoId": "ILBDFlYMGAY",
+      "published": "2026-10-26T11:00:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "BIOSHOCK Movie Director Francis Lawrence Says Netflix Adaptation Is “Getting Close,” But There’s Still a Hurdle",
+      "title": "New Bigfoot Documentary CAPTURING BIGFOOT Reveals Incredible 4K Scan of Legendary 1967 Footage",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/bioshock-movie-director-francis-lawrence-says-netflix-adaptation-is-getting-close-but-theres-still-a-hurdle",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.794024+00:00",
+      "link": "https://geektyrant.com/news/new-bigfoot-documentary-capturing-bigfoot-reveals-incredible-4k-scan-of-legendary-1967-footage",
+      "videoId": "18KLMt8amms",
+      "published": "2026-10-25T18:30:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "New Details About GHOSTBUSTERS: NIGHT SHIFT Sound Promising - \"This Show Is Legit Scary\"",
+      "title": "Retro Trailer for George C. Scott's Classic 1980 Haunted House Horror Film THE CHANGELING",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/new-details-from-the-executive-producers-about-ghostbusters-night-shift-sound-promising-this-show-is-legit-scary",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.793785+00:00",
+      "link": "https://geektyrant.com/news/retro-trailer-for-george-c-scotts-classic-1980-haunted-house-horror-film-the-changeling",
+      "videoId": "UwUI7d5TgGA",
+      "published": "2026-10-24T19:45:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "MASS EFFECT TV Series Faces a Major Canon Problem That the Canceled Game Had Already Solved",
+      "title": "THE PRESTIGE Returns! Watch the Teaser Trailer for Christopher Nolan’s 2027 IMAX Re-Release",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/mass-effect-tv-series-faces-a-major-canon-problem-that-the-canceled-game-had-already-solved",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.793733+00:00",
+      "link": "https://geektyrant.com/news/the-prestige-returns-watch-the-teaser-trailer-for-christopher-nolans-2027-imax-re-release",
+      "videoId": "IK4ExT-KZUM",
+      "published": "2026-10-24T14:36:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "Marvel Fans Are Seriously Upset Over a Captain America Joke in AVENGERS: DOOMSDAY? Come On, People!",
+      "title": "TANGLES First Teaser Reveals a Beautiful and Heartbreaking Animated Film About Alzheimer's",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/marvel-fans-are-seriously-upset-over-a-captain-america-joke-in-avengers-doomsday-come-on-people",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.793633+00:00",
+      "link": "https://geektyrant.com/news/tangles-first-teaser-reveals-a-beautiful-and-heartbreaking-animated-film-about-alzheimers",
+      "videoId": "mdGrH_f4wJw",
+      "published": "2026-10-23T19:57:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
     },
     {
-      "title": "GHOST IN THE SHELL Gets Another New Anime Project From SCOTT PILGRIM TAKES OFF Studio Science SARU",
+      "title": "New I PLAY ROCKY Trailer Tells the Awesome Underdog Story of Sylvester Stallone Making ROCKY",
       "category": "Gaming",
-      "link": "https://geektyrant.com/news/ghost-in-the-shell-gets-another-new-anime-project-from-scott-pilgrim-takes-off-studio-science-saru",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.792779+00:00",
+      "link": "https://geektyrant.com/news/new-i-play-rocky-trailer-tells-the-awesome-underdog-story-of-sylvester-stallone-making-rocky",
+      "videoId": "jq5oCjhQtIc",
+      "published": "2026-10-23T17:59:00+00:00",
       "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "Original X-Men Rumored to Return in AVENGERS: SECRET WARS for One Final Send-Off",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/original-x-men-rumored-to-return-in-avengers-secret-wars-for-one-final-send-off",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.792411+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "New JUMANJI: OPEN WORLD Trailer Brings the Game Into the Real World for One Final Adventure",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/new-jumanji-open-world-trailer-brings-the-game-into-the-real-world-for-one-final-adventure",
-      "videoId": "nIw1O3zvOfE",
-      "published": "2026-10-28T21:27:41.792181+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "GODZILLA MINUS ONE Director Takashi Yamazaki Casts Paul Giamatti and More in GRANDGEAR",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/godzilla-minus-one-director-takashi-yamazaki-casts-paul-giamatti-and-more-in-his-first-english-language-film-grandgear",
-      "videoId": "",
-      "published": "2026-10-28T21:27:41.791221+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "Amy Poehler Leads a Team of Archeologists in Trailer for Peacock Comedy Series DIG",
-      "category": "Gaming",
-      "link": "https://geektyrant.com/news/amy-poehler-leads-a-team-of-archeologists-in-trailer-for-peacock-comedy-series-dig",
-      "videoId": "ir2zni8_tP4",
-      "published": "2026-10-28T21:27:41.791095+00:00",
-      "source": "https://www.geektyrant.com/news?format=rss"
-    },
-    {
-      "title": "Full Trailer for Korean Thriller 'Paradise Lost' Starring Kim Hyun-joo",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/full-trailer-for-korean-thriller-paradise-lost-starring-kim-hyun-joo/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155692+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Japanese Indie Horror 'The Invisible Half' Trailer About a Phone Entity",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/japanese-indie-horror-the-invisible-half-trailer-about-a-phone-entity/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155657+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Final US Trailer for 'The Shadow's Edge' Tech Thriller with Jackie Chan",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/final-us-trailer-for-the-shadows-edge-tech-thriller-with-jackie-chan/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155622+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Pam Grier Stars in Tarantino's 'Jackie Brown' New 4K SteelBook Trailer",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/pam-grier-tarantinos-jackie-brown-4k-steelbook-trailer/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155602+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Chris Pratt & Jude Hill Co-Star in 'Way of the Warrior Kid' Movie Trailer",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/chris-pratt-jude-hill-co-star-in-way-of-the-warrior-kid-movie-trailer/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155581+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Fun NYC Featurette with 'Club Kid' Jordan Firstman & Reggie Absolom",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/fun-nyc-featurette-with-club-kids-jordan-firstman-reggie-absolom/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155572+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Final Trailer for 'Dune: Part Three' Sci-Fi Feat. Chalamet & Pattinson",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/final-trailer-for-dune-part-three-scifi-chalamet-pattinson/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155561+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "New Trailer for 4K Version of 'Animal Farm' 50s CIA Animated Classic",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/new-trailer-for-4k-version-of-animal-farm-50s-cia-animated-classic/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155540+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Amy Poehler & Hugh Laurie in Archaeologists Series 'Dig' Main Trailer",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/amy-poehler-hugh-laurie-in-archaeologists-series-dig-main-trailer/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155519+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Intense Red Band Trailer for 'The Mosquito Bowl' WWII Okinawa Movie",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/intense-red-band-trailer-for-the-mosquito-bowl-wwii-okinawa-movie/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155498+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "The Story of Civilian Tunnelers During WWI in 'The War Below' Trailer",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/the-story-of-civilian-tunnelers-during-wwi-in-the-war-below-trailer/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155477+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "T.J. Power Reconnects with Alien Pal in 'Allen' Sci-Fi Comedy Trailer",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/tj-power-reconnects-with-alien-pal-in-allen-scifi-comedy/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155467+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Pedro Pascal Makes Movie Scores in Gilroy's 'Behemoth!' Trailer #2",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/pedro-pascal-makes-movie-scores-in-gilroys-behemoth-trailer-2/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155446+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Another Wacky Trailer for 'Jumanji: Open World' Action Comedy Sequel",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/another-wacky-trailer-for-jumanji-open-world-action-comedy-sequel/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155436+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Official Trailer for Netflix's 'Pride and Prejudice' Starring Emma Corrin",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/official-trailer-for-netflixs-pride-and-prejudice-starring-emma-corrin/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155426+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Doc 'SCTV: The Greatest Show You've Never Heard Of' Official Trailer",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/doc-sctv-the-greatest-show-youve-never-heard-of-official-trailer/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155415+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "HBO Trailer for 'The Slightest Touch' EB Doc Featuring Colin Farrell",
-      "category": "Movie Trailers",
-      "link": "https://www.firstshowing.net/2026/hbo-trailer-for-the-slightest-touch-eb-doc-featuring-colin-farrell/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:40.155388+00:00",
-      "source": "https://www.firstshowing.net/feed/"
-    },
-    {
-      "title": "Worlds collide during the final game in the new trailer for Jumanji: Open World",
-      "category": "Movie Trailers",
-      "link": "https://www.joblo.com/jumanji-open-world-trailer-new/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:39.298182+00:00",
-      "source": "https://www.joblo.com/feed/"
-    },
-    {
-      "title": "Pedro Pascal goes on a musical journey in the new trailer for Behemoth!",
-      "category": "Movie Trailers",
-      "link": "https://www.joblo.com/behemoth-trailer-new/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:39.298150+00:00",
-      "source": "https://www.joblo.com/feed/"
-    },
-    {
-      "title": "Netflix unveils a new trailer for the six-part Pride and Prejudice series",
-      "category": "Movie Trailers",
-      "link": "https://www.joblo.com/pride-and-prejudice-trailer-new/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:39.298110+00:00",
-      "source": "https://www.joblo.com/feed/"
-    },
-    {
-      "title": "Parks and Rec Meets The Good Place in the Hilarious First Trailer for Amy Poehler’s Dig!",
-      "category": "Movie Trailers",
-      "link": "https://www.joblo.com/dig-trailer-amy-poehler-comedy-series/",
-      "videoId": "",
-      "published": "2026-10-28T21:27:39.298062+00:00",
-      "source": "https://www.joblo.com/feed/"
-    },
-    {
-      "title": "Michael Keaton’s Batman Returns Batmobile & More Iconic DC Props Could Be Yours to Own",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214464-batman-returns-batmobile-movie-memorabilia-auction",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851218+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Legendary Singer Thought GTA 6 Is a TV Show Despite Being Part of Its Soundtrack",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/games/news/2214339-gta-6-legendary-singer-surprise-appearance",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851205+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "GTA 6’s Jason & Lucia Cast Get Advice From Beloved Trevor, Michael, & Franklin Voice Actors",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/games/news/2214362-gta-6-jason-lucia-advice-gta-v-actors",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851195+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "The Cat and the Hatchet Poster Previews Bizarre Dr. Seuss-Inspired Horror Movie",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214372-the-cat-and-the-hatchet-poster-bizarre-dr-seuss-inspired-horror-movie",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851179+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Paul Anthony Kelly Has an Important Message for Motorcyclists After Previous Accident",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214430-paul-anthony-kelly-tattoo-story-warning-bike-riders",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851169+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Jennifer Lopez & Robert Zemeckis’ It Ends With Us-Like Feud Reports Denied By Netflix",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214344-jennifer-lopez-robert-zemeckis-it-ends-with-us-like-feud-reports-denied-netflix",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851159+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Call of Duty: Modern Warfare Movie Gets Reassuring Update Both Fans & Newcomers Will Like",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214422-what-else-do-we-know-about-peter-bergs-call-of-duty-movie",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851144+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Drew Barrymore’s Popular TV Show Is Breaking Viewership Records Ahead of Ben Stiller Appearance",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/tv/news/2214443-drew-barrymore-popular-tv-show-viewership-records-ben-stiller-appearance",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851113+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Peter Dinklage, Renée Zellweger, & More Cast in New Charlie Kaufman-Like Comedy Movie",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214419-renee-zellweger-dominic-sessa-peter-dinklage-darlington",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851096+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Jumanji 4 & Dune 3’s Final Trailer Releases Have Avengers: Doomsday Fans Feeling Left Out",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214477-jumanji-4-dune-3-final-trailer-releases-avengers-doomsday-fans-feeling-left-out",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851085+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Popular Bong Joon Ho Movie That Parasite Fans Love Gets New Trailer for 4K Theatrical Rerelease",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214463-popular-bong-joon-ho-movie-parasite-fans-love-trailer-4k-theatrical-rerelease",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851068+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Obsession’s Inde Navarrette Goes Full Nikki in Hilarious New SNL Halloween Video",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214364-inde-navarrette-obsession-horror-snl-halloween",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851058+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Paris Hilton Defends Her Children’s Halloween Costumes After Big Backlash & Criticism",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/tv/news/2214426-paris-hilton-defends-childrens-halloween-costumes-big-backlash-criticism",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851042+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Chris Hansen Invites Robert Pattinson Onto His Show to Discuss Primetime Discourse",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214543-robert-pattinson-chris-hansen-have-a-seat-invitation-primetime",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851028+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Frasier Star Feels Guilty About Controversial Fat Suit Storyline: ‘It Was Normalized’",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/tv/news/2214444-jane-leeves-frasier-fat-suit-pregnancy-storyline",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.851017+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Brooks Nader Reveals Carmen Electra’s Baywatch Warning Was Spot-On",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/tv/news/2214412-brooks-nader-carmen-electra-baywatch-warning",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.850997+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Dune Movies Get Rerelease News Timothée Chalamet Fans Have Been Waiting for Before Dune: Part Three",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214516-dune-films-imax-rerelease-dune-part-3-sneak-peek",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.850981+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Colin Farrell’s Emotional The Slightest Touch HBO Max Trailer Will Make You Cry",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/trailers/2214512-colin-farrell-pushes-friends-wheelchair-marathon-finish-slightest-touch-trailer",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.850968+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Jennifer Lawrence Confronts Crew Members Who Invaded Her Nude Scene",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214488-jennifer-lawrence-confronts-crew-members-nude-scene",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.850942+00:00",
-      "source": "https://www.comingsoon.net/feed"
-    },
-    {
-      "title": "Cynthia Erivo Reflects on Intense Scrutiny Over Ariana Grande Friendship During Wicked Movies",
-      "category": "Movie Trailers",
-      "link": "https://www.comingsoon.net/movies/news/2214487-cynthia-erivo-ariana-grande-friendship-scrutiny",
-      "videoId": "",
-      "published": "2026-10-28T21:27:38.850914+00:00",
-      "source": "https://www.comingsoon.net/feed"
     }
   ]
 }
