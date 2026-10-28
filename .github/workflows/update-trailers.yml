@@ -5,6 +5,12 @@ on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+    inputs:
+      backfill:
+        description: "Search for older trailers using the YouTube API"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -28,6 +34,9 @@ jobs:
           python-version: "3.12"
 
       - name: Run trailer updater
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_BACKFILL: ${{ github.event_name == 'workflow_dispatch' && inputs.backfill || false }}
         run: python update_trailers.py
 
       - name: Save updated trailer data
