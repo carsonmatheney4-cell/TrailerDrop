@@ -50,81 +50,148 @@ details{background:#121722;border:1px solid var(--line);border-radius:14px;paddi
   </details>
 </main>
 <footer>TrailerDrop is an unofficial fan project and is not affiliated with Nintendo, YouTube, movie studios, or game publishers.</footer>
+
 <script>
-const FEEDS = [
-  {name:"ComingSoon",category:"movies",url:"https://www.comingsoon.net/feed"},
-  {name:"JoBlo",category:"movies",url:"https://www.joblo.com/newsfeeds/rss.xml"},
-  {name:"FirstShowing",category:"movies",url:"https://www.firstshowing.net/feed/?full"},
-  {name:"Nintendo News",category:"nintendo",url:"https://www.nintendo.co.jp/news/whatsnew.xml"},
-  {name:"We Got This Covered",category:"games",url:"https://wegotthiscovered.com/feed/"},
-  {name:"GeekTyrant",category:"games",url:"https://geektyrant.com/news/?format=rss"}
-];
-const BLOCK_TERMS = /\b(nc[\s-]?17|xxx|porn|explicit sex|sexual content|adult film|hardcore)\b/i;
-const KEYWORDS = {
-  movies:/\b(trailer|teaser|official trailer|movie|film|cinema|red band)\b/i,
-  games:/\b(game trailer|gameplay trailer|video game|gaming|playstation|xbox|pc gaming|steam|switch 2|nintendo)\b/i,
-  nintendo:/\b(nintendo direct|direct presentation|indie world|partner showcase|treehouse live)\b/i
-};
-let items=[], category="all", opened=new Set();
-const $=id=>document.getElementById(id);
-function videoId(text){
-  if(!text)return "";
-  const patterns=[/(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([A-Za-z0-9_-]{11})/i, /youtube\.com\/live\/([A-Za-z0-9_-]{11})/i];
-  for(const p of patterns){const m=text.match(p);if(m)return m[1]}
-  return "";
-}
-function safeText(s){return String(s||"").replace(/<[^>]*>/g," ").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&#39;|&apos;/gi,"'").replace(/&quot;/gi,'"').replace(/\s+/g," ").trim()}
-async function loadFeed(feed){
-  const endpoint="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
-  const res=await fetch(endpoint);
-  if(!res.ok)throw Error("feed service unavailable");
-  const data=await res.json();
-  if(data.status!=="ok"||!Array.isArray(data.items))throw Error("feed unavailable");
-  return data.items.map(x=>{
-    const title=safeText(x.title), desc=safeText(x.description||x.content||"");
-    const id=videoId((x.link||"")+" "+desc);
-    const combined=title+" "+desc;
-    if(!id||BLOCK_TERMS.test(title))return null;
-    let cat=feed.category;
-    if(KEYWORDS.nintendo.test(title))cat="nintendo";
-    else if(KEYWORDS.games.test(title))cat="games";
-    else if(KEYWORDS.movies.test(title))cat="movies";
-    else return null;
-    return {id,title,category:cat,source:feed.name,date:Date.parse(x.pubDate)||0,thumb:"https://i.ytimg.com/vi/"+id+"/hqdefault.jpg"};
-  }).filter(Boolean);
-}
-function render(){
-  const query=$("search").value.trim().toLowerCase();
-  let filtered=items.filter(x=>(category==="all"||x.category===category)&&(!query||(x.title+" "+x.source).toLowerCase().includes(query)));
-  filtered.sort((a,b)=>$("sort").value==="new"?b.date-a.date:a.date-b.date);
-  $("grid").innerHTML="";
-  if(!filtered.length){$("grid").innerHTML='<div class="empty">No matching embedded trailers found yet. Try another search or press “Refresh feeds”.</div>';return}
-  for(const x of filtered){
-    const card=document.createElement("article");card.className="card";
-    if(opened.has(x.id)){
-      const iframe=document.createElement("iframe");iframe.className="player";iframe.src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(x.id);iframe.title=x.title;iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";iframe.allowFullscreen=true;iframe.referrerPolicy="strict-origin-when-cross-origin";card.appendChild(iframe);
-    }else{
-      const img=document.createElement("img");img.className="thumb";img.src=x.thumb;img.alt="Video thumbnail";img.loading="lazy";img.onerror=()=>{img.style.display="none"};card.appendChild(img);
+let items = [];
+let category = "all";
+let opened = new Set();
+const $ = id => document.getElementById(id);
+
+function render() {
+  const query = $("search").value.trim().toLowerCase();
+  let filtered = items.filter(x =>
+    (category === "all" || x.category === category) &&
+    (!query || (x.title + " " + x.source).toLowerCase().includes(query))
+  );
+
+  filtered.sort((a, b) =>
+    $("sort").value === "new" ? b.date - a.date : a.date - b.date
+  );
+
+  $("grid").innerHTML = "";
+
+  if (!filtered.length) {
+    $("grid").innerHTML =
+      '<div class="empty">No embedded trailers yet. The updater may still be checking feeds, or the feeds may not contain embeddable video IDs.</div>';
+    return;
+  }
+
+  for (const x of filtered) {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    if (opened.has(x.id)) {
+      const iframe = document.createElement("iframe");
+      iframe.className = "player";
+      iframe.src = "https://www.youtube-nocookie.com/embed/" +
+        encodeURIComponent(x.id);
+      iframe.title = x.title;
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      card.appendChild(iframe);
+    } else {
+      const img = document.createElement("img");
+      img.className = "thumb";
+      img.src = "https://i.ytimg.com/vi/" + x.id + "/hqdefault.jpg";
+      img.alt = "Video thumbnail";
+      img.loading = "lazy";
+      card.appendChild(img);
     }
-    const body=document.createElement("div");body.className="content";
-    const title=document.createElement("div");title.className="title";title.textContent=x.title;
-    const meta=document.createElement("div");meta.className="meta";meta.textContent=x.source+" • "+(x.date?new Date(x.date).toLocaleDateString():"Date unavailable");
-    const btn=document.createElement("button");btn.className="watch";btn.textContent=opened.has(x.id)?"Close player":"Watch here";btn.onclick=()=>{if(opened.has(x.id))opened.delete(x.id);else opened.add(x.id);render()};
-    body.append(title,meta,btn);card.appendChild(body);$("grid").appendChild(card);
+
+    const body = document.createElement("div");
+    body.className = "content";
+
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = x.title;
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = x.source + " • " +
+      (x.date ? new Date(x.date).toLocaleDateString() : "Date unavailable");
+
+    const btn = document.createElement("button");
+    btn.className = "watch";
+    btn.textContent = opened.has(x.id) ? "Close player" : "Watch here";
+    btn.onclick = () => {
+      if (opened.has(x.id)) opened.delete(x.id);
+      else opened.add(x.id);
+      render();
+    };
+
+    body.append(title, meta, btn);
+    card.appendChild(body);
+    $("grid").appendChild(card);
   }
 }
-async function refresh(){
-  $("refresh").disabled=true;$("status").textContent="Checking public feeds…";
-  const results=await Promise.allSettled(FEEDS.map(loadFeed));
-  const good=results.filter(x=>x.status==="fulfilled").flatMap(x=>x.value);
-  const failed=results.length-results.filter(x=>x.status==="fulfilled").length;
-  const map=new Map();for(const x of good){if(!map.has(x.id))map.set(x.id,x)}
-  items=[...map.values()];
-  $("status").textContent=items.length+" embedded trailer posts found"+(failed?"; "+failed+" feed(s) could not be checked.":" .")+" Results refresh when you press the button.";
-  $("refresh").disabled=false;render();
+
+async function refresh() {
+  $("refresh").disabled = true;
+  $("status").textContent = "Loading the latest saved trailer data…";
+
+  try {
+    const response = await fetch("trailers.json?updated=" + Date.now(), {
+      cache: "no-store"
+    });
+    if (!response.ok) throw new Error("Trailer data not available");
+
+    const data = await response.json();
+
+    items = (data.videos || [])
+      .filter(x => x.videoId && x.title)
+      .map(x => {
+        const title = x.title;
+        const text = title.toLowerCase();
+        let cat = "games";
+
+        if (/nintendo direct|indie world|partner showcase|treehouse live|direct presentation/.test(text)) {
+          cat = "nintendo";
+        } else if (/movie|film|cinema|official trailer|teaser|red band/.test(text)) {
+          cat = "movies";
+        }
+
+        return {
+          id: x.videoId,
+          title,
+          category: cat,
+          source: (x.source || "").includes("comingsoon") ? "ComingSoon" :
+                  (x.source || "").includes("joblo") ? "JoBlo" :
+                  (x.source || "").includes("firstshowing") ? "FirstShowing" :
+                  (x.source || "").includes("nintendo") ? "Nintendo News" :
+                  (x.source || "").includes("geektyrant") ? "GeekTyrant" :
+                  (x.source || "").includes("wegotthiscovered") ? "We Got This Covered" :
+                  "TrailerDrop feed",
+          date: Date.parse(x.published || "") || 0
+        };
+      });
+
+    $("status").textContent =
+      items.length + " embedded trailers loaded. Feed data last updated: " +
+      (data.updated ? new Date(data.updated).toLocaleString() : "unknown") + ".";
+  } catch (error) {
+    $("status").textContent =
+      "Couldn't load trailers.json yet. Check that the file exists in the repository and try again.";
+    items = [];
+  }
+
+  $("refresh").disabled = false;
+  render();
 }
-document.querySelectorAll("[data-category]").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll("[data-category]").forEach(b=>b.classList.remove("active"));btn.classList.add("active");category=btn.dataset.category;render()}));
-$("search").addEventListener("input",render);$("sort").addEventListener("change",render);$("refresh").addEventListener("click",refresh);
+
+document.querySelectorAll("[data-category]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-category]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    category = btn.dataset.category;
+    render();
+  });
+});
+
+$("search").addEventListener("input", render);
+$("sort").addEventListener("change", render);
+$("refresh").addEventListener("click", refresh);
+
 refresh();
 </script>
 </body>
