@@ -18,7 +18,7 @@ FEEDS = {
         "https://www.firstshowing.net/feed/",
     ],
     "Gaming": [
-        "https://www.nintendo.com/us/whatsnew/feed/",
+        "https://www.youtube.com/feeds/videos.xml?channel_id=UCGIY_O-8vW4rfX98KlMkvRg",
         "https://www.geektyrant.com/news?format=rss",
         "https://wegotthiscovered.com/feed/",
         "https://www.youtube.com/feeds/videos.xml?channel_id=UCGIY_O-8vW4rfX98KlMkvRg",
@@ -33,7 +33,10 @@ KEYWORDS = (
     "splatoon", "donkey kong", "super smash bros",
     "fire emblem", "pikmin", "official reveal",
     "game reveal", "switch 2", "launch trailer",
-    "announcement trailer", "first look",
+    "announcement trailer", "first look", "mario tennis", "mario party", "mario odyssey",
+"super mario bros", "mario wonder", "mario galaxy",
+"mario kart world", "nintendo direct", "indie world",
+"gameplay trailer", "release date trailer",
 )
 
 VIDEO_PATTERNS = [
