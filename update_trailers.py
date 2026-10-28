@@ -38,7 +38,7 @@ KEYWORDS = (
 
 VIDEO_PATTERNS = [
     r"youtube\.com/embed/([A-Za-z0-9_-]{11})",
-    r"youtube\.com/watch\?[^ \t\"'<>]*?[?&]v=([A-Za-z0-9_-]{11})",
+    r"youtube\.com/watch\?(?:[^ \t\"'<>]*&)?v=([A-Za-z0-9_-]{11})",
     r"youtu\.be/([A-Za-z0-9_-]{11})",
     r"youtube\.com/shorts/([A-Za-z0-9_-]{11})",
     r"youtube\.com/live/([A-Za-z0-9_-]{11})",
