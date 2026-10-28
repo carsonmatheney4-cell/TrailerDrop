@@ -9,7 +9,7 @@ from pathlib import Path
 from html import unescape
 
 OUTPUT = Path("trailers.json")
-MAX_VIDEOS = 200
+MAX_VIDEOS = 10000
 TIMEOUT = 15
 
 FEEDS = {
