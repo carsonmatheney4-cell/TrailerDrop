@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TrailerDrop — New trailers, in one place</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0d12;--panel:#151923;--muted:#9ba5b7;--line:#292f3d;--accent:#8b5cf6;--accent2:#22d3ee}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#17152b 0,#0b0d12 52%);color:#f7f8fc;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:30px 18px 20px;max-width:1100px;margin:auto} .brand{font-weight:900;letter-spacing:-1.2px;font-size:clamp(2rem,6vw,3.5rem)}.brand span{color:var(--accent2)}.sub{color:var(--muted);margin-top:4px}
+main{max-width:1100px;margin:auto;padding:0 18px 48px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+input,select,button{font:inherit;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#151923;color:#f7f8fc}
+input{flex:1;min-width:180px}button{cursor:pointer;font-weight:700}button.active,button.primary{background:var(--accent);border-color:var(--accent)}button:hover{filter:brightness(1.12)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.tab{background:transparent}
+.notice{background:#121722;border:1px solid var(--line);border-radius:14px;padding:14px;color:#cbd3e1;margin-bottom:20px;font-size:.92rem}
+.status{color:var(--muted);font-size:.9rem;margin:10px 0 16px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:16px}
+.card{overflow:hidden;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#171c28,#10131b);display:flex;flex-direction:column;min-width:0}
+.thumb{width:100%;aspect-ratio:16/9;object-fit:cover;background:#222839}.placeholder{aspect-ratio:16/9;display:grid;place-items:center;background:linear-gradient(135deg,#272044,#102a35);font-size:2.5rem}
+.content{padding:13px;display:flex;flex-direction:column;gap:8px;flex:1}.title{font-weight:800;line-height:1.3}.meta{color:var(--muted);font-size:.82rem}.watch{width:100%;margin-top:auto;background:#252b3a;border-color:#3b4357}
+.player{width:100%;aspect-ratio:16/9;border:0;background:#000}.empty{border:1px dashed #394153;border-radius:14px;padding:28px;text-align:center;color:var(--muted);grid-column:1/-1}
+details{background:#121722;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:26px}summary{cursor:pointer;font-weight:800}details p,details li{color:#c2cada}small{color:var(--muted)}footer{max-width:1100px;margin:auto;padding:20px 18px 40px;color:var(--muted);font-size:.82rem}
+@media(max-width:500px){.toolbar>*{width:100%}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Trailer<span>Drop</span></div>
+  <div class="sub">Movie trailers • Game trailers • Nintendo Directs</div>
+</header>
+<main>
+  <div class="notice"><strong>Free version:</strong> no Google Cloud, no paid API key, and no subscription. This page checks public feeds through a free feed-conversion service. Availability and refresh speed depend on that service and the publishers.</div>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Search trailers…" aria-label="Search trailers">
+    <select id="sort" aria-label="Sort results"><option value="new">Newest first</option><option value="old">Oldest first</option></select>
+    <button id="refresh" class="primary">Refresh feeds</button>
+  </div>
+  <div class="tabs" role="group" aria-label="Categories">
+    <button class="tab active" data-category="all">Everything</button>
+    <button class="tab" data-category="movies">Movie trailers</button>
+    <button class="tab" data-category="games">Game trailers</button>
+    <button class="tab" data-category="nintendo">Nintendo Directs</button>
+  </div>
+  <div id="status" class="status">Loading public feeds…</div>
+  <section id="grid" class="grid" aria-live="polite"></section>
+  <details>
+    <summary>How this free version works</summary>
+    <p>It checks a small set of public entertainment feeds and shows matching posts. A post is shown only when the page can identify a YouTube video to embed. RSS feeds are not a complete directory, so some new trailers may be missed.</p>
+    <p><strong>Age suitability:</strong> the site hides posts whose titles contain certain adult-content terms, but title filtering is imperfect and does not verify official film ratings. Please check with a parent or guardian if you're unsure about a title.</p>
+    <p><strong>Privacy:</strong> searches run in this page. Feed requests go to the public feed service and the source sites. The embedded video player is provided by YouTube; playback may be unavailable if the uploader disables embedding.</p>
+  </details>
+</main>
+<footer>TrailerDrop is an unofficial fan project and is not affiliated with Nintendo, YouTube, movie studios, or game publishers.</footer>
+<script>
+const FEEDS = [
+  {name:"ComingSoon",category:"movies",url:"https://www.comingsoon.net/feed"},
+  {name:"JoBlo",category:"movies",url:"https://www.joblo.com/newsfeeds/rss.xml"},
+  {name:"FirstShowing",category:"movies",url:"https://www.firstshowing.net/feed/?full"},
+  {name:"Nintendo News",category:"nintendo",url:"https://www.nintendo.co.jp/news/whatsnew.xml"},
+  {name:"We Got This Covered",category:"games",url:"https://wegotthiscovered.com/feed/"},
+  {name:"GeekTyrant",category:"games",url:"https://geektyrant.com/news/?format=rss"}
+];
+const BLOCK_TERMS = /\b(nc[\s-]?17|xxx|porn|explicit sex|sexual content|adult film|hardcore)\b/i;
+const KEYWORDS = {
+  movies:/\b(trailer|teaser|official trailer|movie|film|cinema|red band)\b/i,
+  games:/\b(game trailer|gameplay trailer|video game|gaming|playstation|xbox|pc gaming|steam|switch 2|nintendo)\b/i,
+  nintendo:/\b(nintendo direct|direct presentation|indie world|partner showcase|treehouse live)\b/i
+};
+let items=[], category="all", opened=new Set();
+const $=id=>document.getElementById(id);
+function videoId(text){
+  if(!text)return "";
+  const patterns=[/(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([A-Za-z0-9_-]{11})/i, /youtube\.com\/live\/([A-Za-z0-9_-]{11})/i];
+  for(const p of patterns){const m=text.match(p);if(m)return m[1]}
+  return "";
+}
+function safeText(s){return String(s||"").replace(/<[^>]*>/g," ").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&#39;|&apos;/gi,"'").replace(/&quot;/gi,'"').replace(/\s+/g," ").trim()}
+async function loadFeed(feed){
+  const endpoint="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
+  const res=await fetch(endpoint);
+  if(!res.ok)throw Error("feed service unavailable");
+  const data=await res.json();
+  if(data.status!=="ok"||!Array.isArray(data.items))throw Error("feed unavailable");
+  return data.items.map(x=>{
+    const title=safeText(x.title), desc=safeText(x.description||x.content||"");
+    const id=videoId((x.link||"")+" "+desc);
+    const combined=title+" "+desc;
+    if(!id||BLOCK_TERMS.test(title))return null;
+    let cat=feed.category;
+    if(KEYWORDS.nintendo.test(title))cat="nintendo";
+    else if(KEYWORDS.games.test(title))cat="games";
+    else if(KEYWORDS.movies.test(title))cat="movies";
+    else return null;
+    return {id,title,category:cat,source:feed.name,date:Date.parse(x.pubDate)||0,thumb:"https://i.ytimg.com/vi/"+id+"/hqdefault.jpg"};
+  }).filter(Boolean);
+}
+function render(){
+  const query=$("search").value.trim().toLowerCase();
+  let filtered=items.filter(x=>(category==="all"||x.category===category)&&(!query||(x.title+" "+x.source).toLowerCase().includes(query)));
+  filtered.sort((a,b)=>$("sort").value==="new"?b.date-a.date:a.date-b.date);
+  $("grid").innerHTML="";
+  if(!filtered.length){$("grid").innerHTML='<div class="empty">No matching embedded trailers found yet. Try another search or press “Refresh feeds”.</div>';return}
+  for(const x of filtered){
+    const card=document.createElement("article");card.className="card";
+    if(opened.has(x.id)){
+      const iframe=document.createElement("iframe");iframe.className="player";iframe.src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(x.id);iframe.title=x.title;iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";iframe.allowFullscreen=true;iframe.referrerPolicy="strict-origin-when-cross-origin";card.appendChild(iframe);
+    }else{
+      const img=document.createElement("img");img.className="thumb";img.src=x.thumb;img.alt="Video thumbnail";img.loading="lazy";img.onerror=()=>{img.style.display="none"};card.appendChild(img);
+    }
+    const body=document.createElement("div");body.className="content";
+    const title=document.createElement("div");title.className="title";title.textContent=x.title;
+    const meta=document.createElement("div");meta.className="meta";meta.textContent=x.source+" • "+(x.date?new Date(x.date).toLocaleDateString():"Date unavailable");
+    const btn=document.createElement("button");btn.className="watch";btn.textContent=opened.has(x.id)?"Close player":"Watch here";btn.onclick=()=>{if(opened.has(x.id))opened.delete(x.id);else opened.add(x.id);render()};
+    body.append(title,meta,btn);card.appendChild(body);$("grid").appendChild(card);
+  }
+}
+async function refresh(){
+  $("refresh").disabled=true;$("status").textContent="Checking public feeds…";
+  const results=await Promise.allSettled(FEEDS.map(loadFeed));
+  const good=results.filter(x=>x.status==="fulfilled").flatMap(x=>x.value);
+  const failed=results.length-results.filter(x=>x.status==="fulfilled").length;
+  const map=new Map();for(const x of good){if(!map.has(x.id))map.set(x.id,x)}
+  items=[...map.values()];
+  $("status").textContent=items.length+" embedded trailer posts found"+(failed?"; "+failed+" feed(s) could not be checked.":" .")+" Results refresh when you press the button.";
+  $("refresh").disabled=false;render();
+}
+document.querySelectorAll("[data-category]").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll("[data-category]").forEach(b=>b.classList.remove("active"));btn.classList.add("active");category=btn.dataset.category;render()}));
+$("search").addEventListener("input",render);$("sort").addEventListener("change",render);$("refresh").addEventListener("click",refresh);
+refresh();
+</script>
+</body>
+</html>
