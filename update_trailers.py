@@ -10,6 +10,7 @@ from html import unescape
 
 OUTPUT = Path("trailers.json")
 MAX_VIDEOS = 200
+TIMEOUT = 15
 
 FEEDS = {
     "Movie Trailers": [
@@ -18,30 +19,36 @@ FEEDS = {
         "https://www.firstshowing.net/feed/",
     ],
     "Gaming": [
+        # Official Nintendo of America
         "https://www.youtube.com/feeds/videos.xml?channel_id=UCGIY_O-8vW4rfX98KlMkvRg",
+        # Additional Nintendo channels
+        "https://www.youtube.com/feeds/videos.xml?channel_id=UCkH3CcMfqww9RsZvPRPkAJA",
+        "https://www.youtube.com/feeds/videos.xml?channel_id=UCgK_2VQWwigtTr_5TviGy2w",
+        # Gaming news
         "https://www.geektyrant.com/news?format=rss",
         "https://wegotthiscovered.com/feed/",
-        "https://www.youtube.com/feeds/videos.xml?channel_id=UCGIY_O-8vW4rfX98KlMkvRg",
     ],
 }
 
 KEYWORDS = (
     "trailer", "teaser", "gameplay", "game trailer",
     "nintendo direct", "indie world", "partner showcase",
-    "treehouse", "mario", "mario kart", "super mario",
-    "zelda", "pokemon", "pokémon", "kirby", "metroid",
-    "splatoon", "donkey kong", "super smash bros",
-    "fire emblem", "pikmin", "official reveal",
-    "game reveal", "switch 2", "launch trailer",
-    "announcement trailer", "first look", "mario tennis", "mario party", "mario odyssey",
-"super mario bros", "mario wonder", "mario galaxy",
-"mario kart world", "nintendo direct", "indie world",
-"gameplay trailer", "release date trailer",
+    "treehouse", "mario", "zelda", "pokemon", "pokémon",
+    "kirby", "metroid", "splatoon", "donkey kong",
+    "super smash bros", "fire emblem", "pikmin",
+    "switch 2", "official reveal", "game reveal",
+    "launch trailer", "announcement trailer", "first look",
+    "mario tennis", "mario party", "mario odyssey",
+    "super mario bros", "mario wonder", "mario galaxy",
+    "mario kart", "mario kart world", "gameplay trailer",
+    "release date trailer", "direct presentation",
+    "direct showcase", "mario gameplay", "gameplay overview",
+    "game overview", "nintendo switch",
 )
 
 VIDEO_PATTERNS = [
     r"youtube\.com/embed/([A-Za-z0-9_-]{11})",
-    r"youtube\.com/watch\?(?:[^ \t\"'<>]*&)?v=([A-Za-z0-9_-]{11})",
+    r"youtube\.com/watch\?[^\s\"'<>]*?(?:^|&)v=([A-Za-z0-9_-]{11})",
     r"youtu\.be/([A-Za-z0-9_-]{11})",
     r"youtube\.com/shorts/([A-Za-z0-9_-]{11})",
     r"youtube\.com/live/([A-Za-z0-9_-]{11})",
@@ -92,7 +99,7 @@ def main():
     now = datetime.now(timezone.utc).isoformat()
     videos_by_id = {}
 
-    # Keep existing videos if a feed temporarily stops listing them.
+    # Preserve videos already collected.
     if OUTPUT.exists():
         try:
             old_data = json.loads(OUTPUT.read_text(encoding="utf-8"))
@@ -115,7 +122,7 @@ def main():
                 )
 
                 with urllib.request.urlopen(
-                    request, timeout=25
+                    request, timeout=TIMEOUT
                 ) as response:
                     root = ET.fromstring(response.read())
 
@@ -124,6 +131,8 @@ def main():
                     node for node in root.iter()
                     if node.tag.split("}")[-1] in ("item", "entry")
                 ]
+
+                feed_found = 0
 
                 for item in items:
                     title = ""
@@ -140,8 +149,7 @@ def main():
 
                         if name in (
                             "description", "summary", "content",
-                            "encoded", "enclosure", "media:content",
-                            "group"
+                            "encoded", "enclosure", "group", "videoid"
                         ):
                             parts.append(value)
 
@@ -149,20 +157,18 @@ def main():
                             if value and not published:
                                 published = parse_date(value)
 
-                        # Include feed attributes and embedded video URLs.
                         parts.append(str(child.attrib))
+
+                    if not title:
+                        continue
 
                     searchable = (
                         title + " " + " ".join(parts)
                     ).lower()
 
-                    if not title:
-                        continue
-
                     if not any(word in searchable for word in KEYWORDS):
                         continue
 
-                    # YouTube Atom feeds put the video ID in their link.
                     vid = video_id_from(" ".join(parts) + " " + link)
 
                     if not vid:
@@ -170,11 +176,12 @@ def main():
 
                     if vid not in videos_by_id:
                         found_new += 1
+                        feed_found += 1
 
                     videos_by_id[vid] = {
                         "title": title,
                         "category": category,
-                        "link": link,
+                        "link": link or f"https://www.youtube.com/watch?v={vid}",
                         "videoId": vid,
                         "published": (
                             published
@@ -183,6 +190,8 @@ def main():
                         ),
                         "source": feed_url,
                     }
+
+                print(f"Feed OK: {feed_url} | New videos: {feed_found}")
 
             except Exception as error:
                 print(f"Feed failed: {feed_url}: {error}")
