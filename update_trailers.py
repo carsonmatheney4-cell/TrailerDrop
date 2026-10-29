@@ -17,7 +17,7 @@ from pathlib import Path
 OUTPUT = Path("trailers.json")
 MAX_VIDEOS = 10000
 TIMEOUT = 20
-USER_AGENT = "TrailerDrop/2.0"
+USER_AGENT = "TrailerDrop/3.0"
 
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "").strip()
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "").strip()
@@ -39,17 +39,6 @@ TRAILER_KEYWORDS = [
     "cinematic trailer", "launch trailer", "story trailer",
     "gameplay trailer", "world premiere", "official reveal",
     "release date trailer", "reveal trailer",
-]
-
-MOVIE_SEARCH_QUERIES = [
-    "official movie trailer 2026",
-    "official family movie trailer",
-    "official animated movie trailer",
-]
-
-GAMING_SEARCH_QUERIES = [
-    "official video game trailer",
-    "official Nintendo game trailer",
 ]
 
 FEEDS = [
@@ -88,34 +77,30 @@ FEEDS = [
     },
 ]
 
-BACKFILL_QUERIES = [
+MOVIE_BACKFILL_QUERIES = [
+    "official family movie trailer",
+    "official animated movie trailer",
+    "official movie teaser trailer",
+]
+
+GAMING_BACKFILL_QUERIES = [
     "official Nintendo game trailer",
-    "Nintendo Switch 2 official trailer",
     "Mario official game trailer",
     "Zelda official trailer",
     "Pokemon official trailer",
     "Metroid official trailer",
-    "Kirby official trailer",
-    "Donkey Kong official trailer",
-    "Splatoon official trailer",
-    "Animal Crossing official trailer",
-    "Super Smash Bros official trailer",
-    "Nintendo Direct game trailer",
-    "official video game cinematic trailer",
     "official video game reveal trailer",
 ]
 
-RATING_CACHE = {}
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
-YT_NS = "{http://www.youtube.com/xml/schemas/2015}"
+RATING_CACHE = {}
 
 
 def fetch(url):
-    req = urllib.request.Request(
-        url,
-        headers={"User-Agent": USER_AGENT},
+    request = urllib.request.Request(
+        url, headers={"User-Agent": USER_AGENT}
     )
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
+    with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
         return response.read()
 
 
@@ -123,10 +108,7 @@ def request_json(url):
     try:
         return json.loads(fetch(url).decode("utf-8"))
     except (
-        urllib.error.URLError,
-        TimeoutError,
-        OSError,
-        ValueError,
+        urllib.error.URLError, TimeoutError, OSError, ValueError
     ) as exc:
         print(f"Request failed: {exc}")
         return {}
@@ -149,7 +131,6 @@ def video_id_from(url):
         r"youtu\.be/([A-Za-z0-9_-]{11})",
         r"youtube\.com/embed/([A-Za-z0-9_-]{11})",
         r"youtube\.com/shorts/([A-Za-z0-9_-]{11})",
-        r"youtube\.com/feeds/videos\.xml\?video_id=([A-Za-z0-9_-]{11})",
     ]
 
     for pattern in patterns:
@@ -197,16 +178,49 @@ def is_movie_category(category):
 
 
 def normalize_title(title):
+    title = clean_text(title).lower()
+
+    # Remove common trailer labels and technical tags.
     title = re.sub(
-        r"\b(official|final|teaser|movie|film|gameplay|cinematic|"
-        r"announcement|reveal|launch|4k|hd|trailer|clip|"
-        r"international|exclusive|new|coming soon)\b",
+        r"\b(official|final|teaser|trailer|4k|hd|uhd|"
+        r"exclusive|international|cinematic|announcement|"
+        r"reveal|launch|clip|subtitles|dubbed|"
+        r"vertical|extended|new trailer|movie trailer)\b",
+        " ",
+        title,
+    )
+
+    # Remove years and common video labels.
+    title = re.sub(r"\b(19|20)\d{2}\b", " ", title)
+    title = re.sub(r"\b1080p\b|\b720p\b|\b2160p\b", " ", title)
+    title = re.sub(r"[\[\](){}:|–—\-!.,\"']", " ", title)
+
+    return re.sub(r"\s+", " ", title).strip()
+
+
+def movie_search_title(title):
+    """Extract a likely movie title from a YouTube trailer title."""
+    title = clean_text(title)
+
+    # Remove text after common separators used for channel names.
+    title = re.split(r"\s+[|]\s+|\s+[-–—]\s+", title, maxsplit=1)[0]
+
+    # Remove bracketed quality labels.
+    title = re.sub(r"\[[^\]]*\]|\([^)]*\)", " ", title)
+
+    title = re.sub(
+        r"\b(official|final|teaser|trailer|4k|hd|uhd|"
+        r"exclusive|international|new|movie|film|"
+        r"coming soon|in theaters|only in theaters|"
+        r"announcement|reveal|subtitled|dubbed)\b",
         " ",
         title,
         flags=re.I,
     )
-    title = re.sub(r"[\[\](){}:|–—-]", " ", title)
-    return re.sub(r"\s+", " ", title).strip().lower()
+
+    title = re.sub(r"\b(19|20)\d{2}\b", " ", title)
+    title = re.sub(r"\s+", " ", title).strip(" -:|")
+    return title
 
 
 def tmdb_request(path, params=None):
@@ -222,16 +236,14 @@ def tmdb_request(path, params=None):
 
 
 def movie_rating(title):
+    """
+    Return a confirmed allowed US certification.
+    Unknown or unconfirmed ratings remain excluded.
+    """
     if not TMDB_API_KEY:
         return ""
 
-    search_title = re.sub(
-        r"\b(official|final|teaser|trailer|4k|hd|exclusive)\b",
-        " ",
-        title,
-        flags=re.I,
-    )
-    search_title = re.sub(r"\s+", " ", search_title).strip()
+    search_title = movie_search_title(title)
     cache_key = normalize_title(search_title)
 
     if not cache_key:
@@ -245,32 +257,50 @@ def movie_rating(title):
         {"query": search_title, "include_adult": "false"},
     )
 
+    candidates = data.get("results", [])
     best_movie = None
     best_score = 0.0
 
-    for candidate in data.get("results", []):
+    search_normalized = normalize_title(search_title)
+
+    for candidate in candidates:
         candidate_title = candidate.get("title", "")
+        candidate_normalized = normalize_title(candidate_title)
+
+        if not candidate_normalized:
+            continue
+
         score = SequenceMatcher(
-            None,
-            normalize_title(search_title),
-            normalize_title(candidate_title),
+            None, search_normalized, candidate_normalized
         ).ratio()
+
+        # Prefer an exact normalized title match.
+        if candidate_normalized == search_normalized:
+            score = 1.0
 
         if score > best_score:
             best_score = score
             best_movie = candidate
 
-    # Conservative matching prevents assigning the wrong rating.
-    if not best_movie or best_score < 0.60:
+    if not best_movie or best_score < 0.65:
+        print(
+            f"Movie rating unknown: '{title}' "
+            f"(TMDB match score {best_score:.2f})"
+        )
         RATING_CACHE[cache_key] = ""
         return ""
 
     movie_id = best_movie.get("id")
+    matched_title = best_movie.get("title", "")
+
     if not movie_id:
         RATING_CACHE[cache_key] = ""
         return ""
 
-    release_data = tmdb_request(f"/movie/{movie_id}/release_dates")
+    release_data = tmdb_request(
+        f"/movie/{movie_id}/release_dates"
+    )
+
     certifications = []
 
     for country in release_data.get("results", []):
@@ -278,15 +308,32 @@ def movie_rating(title):
             continue
 
         for release in country.get("release_dates", []):
-            cert = (release.get("certification") or "").strip().upper()
+            cert = (
+                release.get("certification") or ""
+            ).strip().upper()
+
             if cert:
                 certifications.append(cert)
 
-    # Require a confirmed allowed US certification.
+    # Use a rating only when the US certification is allowed.
     rating = next(
-        (cert for cert in certifications if cert in ALLOWED_MOVIE_RATINGS),
+        (
+            cert for cert in certifications
+            if cert in ALLOWED_MOVIE_RATINGS
+        ),
         "",
     )
+
+    if rating:
+        print(
+            f"Movie accepted: '{title}' -> "
+            f"{matched_title} ({rating})"
+        )
+    else:
+        print(
+            f"Movie excluded: '{title}' -> "
+            f"{matched_title}; no confirmed allowed US rating"
+        )
 
     RATING_CACHE[cache_key] = rating
     time.sleep(0.05)
@@ -304,8 +351,10 @@ def allowed_video(video):
 
     if is_movie_category(video.get("category", "")):
         rating = movie_rating(title)
+
         if rating not in ALLOWED_MOVIE_RATINGS:
             return False
+
         video["rating"] = rating
     else:
         video.pop("rating", None)
@@ -346,15 +395,15 @@ def extract_video_ids(text):
     ids = set()
 
     patterns = [
-        r"https?://(?:www\.)?youtube\.com/watch\?[^\s\"'<>]*",
+        r"https?://(?:www\.)?youtube\.com/watch\?[^\s\"'<>]+",
         r"https?://youtu\.be/[A-Za-z0-9_-]{11}",
         r"https?://(?:www\.)?youtube\.com/embed/[A-Za-z0-9_-]{11}",
         r"https?://(?:www\.)?youtube\.com/shorts/[A-Za-z0-9_-]{11}",
     ]
 
     for pattern in patterns:
-        for match in re.findall(pattern, text):
-            video_id = video_id_from(match)
+        for url in re.findall(pattern, text):
+            video_id = video_id_from(url)
             if video_id:
                 ids.add(video_id)
 
@@ -365,21 +414,23 @@ def youtube_video_details(video_ids):
     if not YOUTUBE_API_KEY or not video_ids:
         return {}
 
-    ids = list(video_ids)
     details = {}
+    ids = list(video_ids)
 
-    # YouTube videos.list accepts up to 50 IDs per request.
     for start in range(0, len(ids), 50):
         batch = ids[start:start + 50]
+
         params = {
             "part": "snippet",
             "id": ",".join(batch),
             "key": YOUTUBE_API_KEY,
         }
+
         url = (
             "https://www.googleapis.com/youtube/v3/videos?"
             + urllib.parse.urlencode(params)
         )
+
         data = request_json(url)
 
         for item in data.get("items", []):
@@ -404,18 +455,24 @@ def read_feed(feed):
 
     entries = root.findall(".//item")
     entries += root.findall(f".//{ATOM_NS}entry")
+
     embedded_ids = set()
     entry_info = []
 
     for entry in entries:
         title_el = entry.find("title")
+
         if title_el is None:
             title_el = entry.find(f"{ATOM_NS}title")
 
-        title = clean_text(title_el.text or "") if title_el is not None else ""
+        article_title = (
+            clean_text(title_el.text or "")
+            if title_el is not None else ""
+        )
 
         link = ""
         link_el = entry.find("link")
+
         if link_el is not None:
             link = (
                 link_el.get("href") or link_el.text or ""
@@ -427,28 +484,37 @@ def read_feed(feed):
                 link = atom_link.get("href", "").strip()
 
         published = ""
-        for tag in ("pubDate", f"{ATOM_NS}published", f"{ATOM_NS}updated"):
+
+        for tag in (
+            "pubDate",
+            f"{ATOM_NS}published",
+            f"{ATOM_NS}updated",
+        ):
             date_el = entry.find(tag)
+
             if date_el is not None and date_el.text:
                 published = date_el.text
                 break
 
+        ids = extract_video_ids(ET.tostring(entry, encoding="unicode"))
+
         direct_id = video_id_from(link)
-
-        id_el = entry.find(f"{ATOM_NS}id")
-        if not direct_id and id_el is not None and id_el.text:
-            match = re.search(r"yt:video:([A-Za-z0-9_-]{11})", id_el.text)
-            if match:
-                direct_id = match.group(1)
-
-        content = ET.tostring(entry, encoding="unicode")
-        ids = extract_video_ids(content)
 
         if direct_id:
             ids.add(direct_id)
 
+        id_el = entry.find(f"{ATOM_NS}id")
+
+        if id_el is not None and id_el.text:
+            match = re.search(
+                r"yt:video:([A-Za-z0-9_-]{11})",
+                id_el.text,
+            )
+            if match:
+                ids.add(match.group(1))
+
         embedded_ids.update(ids)
-        entry_info.append((title, published, ids))
+        entry_info.append((article_title, published, ids))
 
     details = youtube_video_details(embedded_ids)
 
@@ -458,8 +524,6 @@ def read_feed(feed):
             video_title = clean_text(snippet.get("title", ""))
 
             if not video_title:
-                # Article titles are a fallback only when they themselves
-                # look like a trailer title.
                 video_title = article_title
 
             video = make_video(
@@ -474,17 +538,19 @@ def read_feed(feed):
                 found.append(video)
 
     unique = {video["id"]: video for video in found}
+
     print(
-        f"{feed['name']}: {len(entries)} feed entries, "
+        f"{feed['name']}: {len(entries)} entries, "
         f"{len(embedded_ids)} YouTube links, "
         f"{len(unique)} eligible videos"
     )
+
     return list(unique.values())
 
 
 def search_youtube(query, category):
     if not YOUTUBE_API_KEY:
-        print("YOUTUBE_API_KEY missing; skipping YouTube search.")
+        print("YOUTUBE_API_KEY missing; skipping search.")
         return []
 
     params = {
@@ -502,10 +568,11 @@ def search_youtube(query, category):
         "https://www.googleapis.com/youtube/v3/search?"
         + urllib.parse.urlencode(params)
     )
+
     data = request_json(url)
 
     if data.get("error"):
-        print(f"YouTube API error for {query}: {data['error']}")
+        print(f"YouTube API error for '{query}': {data['error']}")
         return []
 
     found = []
@@ -542,6 +609,7 @@ def load_existing():
             for item in videos
             if isinstance(item, dict) and item.get("id")
         }
+
     except (OSError, ValueError, TypeError) as exc:
         print(f"Could not read existing JSON: {exc}")
         return {}
@@ -563,66 +631,56 @@ def main():
     print("Starting TrailerDrop update...")
     print(f"TMDB key configured: {bool(TMDB_API_KEY)}")
     print(f"YouTube key configured: {bool(YOUTUBE_API_KEY)}")
-
-    if not TMDB_API_KEY:
-        print("WARNING: Movies cannot pass rating checks without TMDB_API_KEY.")
+    print(f"Backfill enabled: {BACKFILL}")
 
     existing = load_existing()
     videos_by_id = {}
 
-    # Recheck old entries; this also removes entries that no longer qualify.
     for video in existing.values():
         if allowed_video(video):
             videos_by_id[video["id"]] = video
 
-    # Read RSS feeds and embedded YouTube links.
     for feed in FEEDS:
         for video in read_feed(feed):
             videos_by_id[video["id"]] = video
 
-    # Search a small number of movie and gaming queries during regular runs.
-    # Full historical searches only run when backfill is enabled.
-    if YOUTUBE_API_KEY:
-        queries = []
-
-        if BACKFILL:
-            queries.extend(
-                (query, "Gaming") for query in BACKFILL_QUERIES
-            )
-            queries.extend(
-                (query, "Movie Trailers") for query in MOVIE_SEARCH_QUERIES
-            )
-        else:
-            queries.extend(
-                (query, "Movie Trailers") for query in MOVIE_SEARCH_QUERIES[:1]
-            )
-            queries.extend(
-                (query, "Gaming") for query in GAMING_SEARCH_QUERIES[:1]
-            )
+    # Searches run only when manually enabled.
+    if BACKFILL:
+        queries = (
+            [(q, "Movie Trailers") for q in MOVIE_BACKFILL_QUERIES]
+            + [(q, "Gaming") for q in GAMING_BACKFILL_QUERIES]
+        )
 
         for query, category in queries:
             for video in search_youtube(query, category):
                 videos_by_id[video["id"]] = video
-            time.sleep(0.2)
 
-    # Final eligibility check and deduplication.
+            time.sleep(0.3)
+    else:
+        print(
+            "YouTube search skipped during scheduled run. "
+            "Use manual backfill to discover additional videos."
+        )
+
     cleaned = []
     seen = set()
 
     for video in videos_by_id.values():
-        if video.get("id") in seen:
+        video_id = video.get("id")
+
+        if not video_id or video_id in seen:
             continue
 
         if allowed_video(video):
-            seen.add(video["id"])
+            seen.add(video_id)
             cleaned.append(video)
 
     cleaned.sort(
         key=lambda video: video.get("published", ""),
         reverse=True,
     )
-    cleaned = cleaned[:MAX_VIDEOS]
 
+    cleaned = cleaned[:MAX_VIDEOS]
     save_output(cleaned)
 
     movies = sum(
