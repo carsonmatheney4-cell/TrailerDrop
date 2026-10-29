@@ -120,6 +120,7 @@ def tmdb_request(endpoint, params=None):
 # JSON FILE
 # ============================================================
 
+
 def load_trailers():
     if not TRAILERS_FILE.exists():
         return []
@@ -128,17 +129,12 @@ def load_trailers():
         with TRAILERS_FILE.open("r", encoding="utf-8") as file:
             content = file.read()
 
-        # DEBUG: Inspect the actual contents read from the file.
-        print("LAST 100 CHARACTERS:", repr(content[-100:]))
-        print("LAST CHARACTER:", repr(content[-1:]))
-        print("ENDS WITH ]:", content.rstrip().endswith("]"))
-
         try:
             data = json.loads(content)
 
         except json.JSONDecodeError as error:
-            start = max(0, error.pos - 250)
-            end = min(len(content), error.pos + 250)
+            start = max(0, error.pos - 300)
+            end = min(len(content), error.pos + 300)
 
             print("\n========== JSON ERROR DETAILS ==========")
             print(f"File: {TRAILERS_FILE}")
@@ -147,10 +143,9 @@ def load_trailers():
             print(f"Column: {error.colno}")
             print(f"Character position: {error.pos}")
             print(f"File length: {len(content)} characters")
-            print("\nText surrounding the error:")
+            print("Text around the error:")
             print(repr(content[start:end]))
             print("\n========== END JSON ERROR DETAILS ==========")
-
             raise
 
         if isinstance(data, list):
