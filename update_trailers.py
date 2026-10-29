@@ -27,7 +27,6 @@ MAX_RESULTS = 25
 ALLOWED_MOVIE_RATINGS = {"G", "PG", "PG-13", "R"}
 BLOCKED_MOVIE_RATINGS = {"NC-17", "X"}
 
-# Lower threshold means stricter title matching.
 MIN_TITLE_SIMILARITY = 0.78
 
 EXCLUDED_TERMS = [
@@ -51,7 +50,6 @@ TRAILER_TERMS = [
     "trailer", "teaser",
 ]
 
-# Search official studios/distributors first.
 SEARCHES = [
     "official movie trailer 2026",
     "official theatrical trailer 2026 movie",
@@ -128,7 +126,27 @@ def load_trailers():
 
     try:
         with TRAILERS_FILE.open("r", encoding="utf-8") as file:
-            data = json.load(file)
+            content = file.read()
+
+        try:
+            data = json.loads(content)
+
+        except json.JSONDecodeError as error:
+            start = max(0, error.pos - 250)
+            end = min(len(content), error.pos + 250)
+
+            print("\n========== JSON ERROR DETAILS ==========")
+            print(f"File: {TRAILERS_FILE}")
+            print(f"Error: {error.msg}")
+            print(f"Line: {error.lineno}")
+            print(f"Column: {error.colno}")
+            print(f"Character position: {error.pos}")
+            print(f"File length: {len(content)} characters")
+            print("\nText surrounding the error:")
+            print(repr(content[start:end]))
+            print("\n========== END JSON ERROR DETAILS ==========")
+
+            raise
 
         if isinstance(data, list):
             return data
@@ -141,7 +159,6 @@ def load_trailers():
         raise ValueError("Unrecognized trailers.json structure.")
 
     except (OSError, json.JSONDecodeError, ValueError) as error:
-        # Do not overwrite a broken file with an empty list.
         raise RuntimeError(
             f"Could not safely load trailers.json: {error}"
         ) from error
@@ -357,7 +374,6 @@ def find_tmdb_movie(title):
 
         score = similarity(search_title, candidate)
 
-        # Exact normalized title is ideal; partial matches are risky.
         if normalize(search_title) == normalize(candidate):
             score = 1.0
 
@@ -421,8 +437,6 @@ def movie_rating(movie):
     if status == "blocked" or status == "confirmed":
         return rating, status
 
-    # Do not guess a movie's rating from a different movie.
-    # Unknown ratings stay unknown.
     return "", "unknown"
 
 
@@ -432,18 +446,15 @@ def movie_rating(movie):
 
 def validate_video(video, detail):
     title = video.get("title", "")
-    snippet = detail.get("snippet", {})
     content = detail.get("contentDetails", {})
     status = detail.get("status", {})
 
-    # Require a real, embeddable, public video.
     if status.get("privacyStatus") != "public":
         return None, "not public"
 
     if status.get("embeddable") is False:
         return None, "not embeddable"
 
-    # Exclude Shorts / short-form videos using actual duration.
     seconds = duration_seconds(content.get("duration", ""))
 
     if seconds is None:
@@ -460,7 +471,6 @@ def validate_video(video, detail):
     if not movie:
         return None, "no confident TMDB movie match"
 
-    # Compare the cleaned title to TMDB's movie title again.
     cleaned_title = get_movie_search_title(title)
     tmdb_title = movie.get("title") or movie.get("original_title") or ""
 
@@ -472,8 +482,6 @@ def validate_video(video, detail):
     if rating_status == "blocked":
         return None, "blocked movie rating"
 
-    # Unknown rating is allowed by the Python updater.
-    # The website must also be changed to display unknown ratings.
     return {
         "id": video["video_id"],
         "video_id": video["video_id"],
