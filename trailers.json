@@ -17,6 +17,23 @@
     "official_channel_candidate": false
   },
   {
+    "id": "uMVYQJuXoTo",
+    "video_id": "uMVYQJuXoTo",
+    "title": "THE HOLY BOY Official Trailer (2026)",
+    "description": "First movie trailer for The Holy Boy.",
+    "channel": "Movie Trailers Source",
+    "published_at": "2026-10-29T15:31:00Z",
+    "thumbnail": "https://i.ytimg.com/vi/uMVYQJuXoTo/hqdefault.jpg",
+    "youtube_url": "https://www.youtube.com/watch?v=uMVYQJuXoTo",
+    "embed_url": "https://www.youtube-nocookie.com/embed/uMVYQJuXoTo",
+    "category": "Movies",
+    "rating": "R",
+    "rating_status": "confirmed",
+    "tmdb_id": 1092936,
+    "duration_seconds": 113,
+    "official_channel_candidate": false
+  },
+  {
     "id": "nOnjgVGDWf8",
     "video_id": "nOnjgVGDWf8",
     "title": "WITCH ON THE HOLY NIGHT Official Trailer (2027)",
@@ -131,6 +148,23 @@
     "category": "movie",
     "rating": "",
     "rating_status": "unknown"
+  },
+  {
+    "id": "dWyRfRcsQAc",
+    "video_id": "dWyRfRcsQAc",
+    "title": "SPACE CADET Trailer (2026)",
+    "description": "SPACE CADET Trailer (2026) Sci-Fi, Robot, Animated Movie HD © 2026 - Viva Pictures.",
+    "channel": "ONE Media Animation",
+    "published_at": "2026-10-28T15:30:17Z",
+    "thumbnail": "https://i.ytimg.com/vi/dWyRfRcsQAc/hqdefault.jpg",
+    "youtube_url": "https://www.youtube.com/watch?v=dWyRfRcsQAc",
+    "embed_url": "https://www.youtube-nocookie.com/embed/dWyRfRcsQAc",
+    "category": "Movies",
+    "rating": "PG-13",
+    "rating_status": "confirmed",
+    "tmdb_id": 1019411,
+    "duration_seconds": 121,
+    "official_channel_candidate": false
   },
   {
     "id": "1uZEHamKCr4",
