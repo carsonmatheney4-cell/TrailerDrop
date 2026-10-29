@@ -19,36 +19,39 @@ permissions:
 
 concurrency:
   group: github-pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     if: >-
       github.event_name != 'workflow_run' ||
-      github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Get repository files
         uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: Prepare website files
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare website
         run: |
-          mkdir _site
-          cp index.html _site/
-          cp trailers.json _site/
+          mkdir -p _site
+          cp index.html trailers.json _site/
           touch _site/.nojekyll
 
-      - name: Upload website
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
-      - name: Deploy website
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
