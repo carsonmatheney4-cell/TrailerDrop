@@ -19,22 +19,6 @@
     "official_channel_candidate": true
   },
   {
-  "video_id": "apjei5GhWhQ",
-  "title": "ALL Fortnite LIVE Events",
-  "category": "gaming",
-  "type": "gaming",
-  "youtube_url": "https://www.youtube.com/watch?v=apjei5GhWhQ&t=5s",
-  "description": "A video featuring Fortnite live events."
-  },
-  {
-  "video_id": "PCzbiO_DxNE",
-  "title": "Every Fortnite New Trailer",
-    "category": "gaming",
-    "type": "gaming",
-    "youtube_url": "https://www.youtube.com/watch?v=PCzbiO_DxNE",
-    "description": "A collection of Fortnite trailers."
-  },
-  {
     "id": "Wi5YB0SUYeU",
     "title": "ENDGAME SMP — Official Trailer | Season 1: Chapter 1",
     "url": "https://www.youtube.com/watch?v=Wi5YB0SUYeU",
@@ -1470,6 +1454,25 @@
     "official_channel_candidate": false
   },
   {
+    "id": "5_c8XtgmoX8",
+    "title": "Minecraft ~ Official Nintendo Switch 2 Launch Trailer",
+    "url": "https://www.youtube.com/watch?v=5_c8XtgmoX8",
+    "thumbnail": "https://i.ytimg.com/vi/5_c8XtgmoX8/hqdefault.jpg",
+    "published": "2026-10-28T17:30:38Z",
+    "category": "Gaming",
+    "source": "Pixonova Game Trailers",
+    "video_id": "5_c8XtgmoX8",
+    "description": "Official Trailer for Minecraft\n\n#gaming #gametrailers #trailer #officialtrailer #pixonova",
+    "channel": "Pixonova Game Trailers",
+    "published_at": "2026-10-28T17:30:38Z",
+    "youtube_url": "https://www.youtube.com/watch?v=5_c8XtgmoX8",
+    "embed_url": "https://www.youtube-nocookie.com/embed/5_c8XtgmoX8",
+    "duration_seconds": 76,
+    "rating": "",
+    "rating_status": "not_applicable",
+    "official_channel_candidate": true
+  },
+  {
     "id": "VKEDqkYp684",
     "title": "Wild Blue Skies | Nintendo Switch Launch Trailer | Balor Games",
     "url": "https://www.youtube.com/watch?v=VKEDqkYp684",
@@ -2327,6 +2330,25 @@
     "official_channel_candidate": true
   },
   {
+    "id": "UVp1ER_POis",
+    "title": "NEW Naruto Shippuden Collaboration Trailer - NARUTO X Knives Out Official Trailer",
+    "url": "https://www.youtube.com/watch?v=UVp1ER_POis",
+    "thumbnail": "https://i.ytimg.com/vi/UVp1ER_POis/hqdefault.jpg",
+    "published": "2026-10-25T15:13:16Z",
+    "category": "Gaming",
+    "source": "STORM MASTER",
+    "video_id": "UVp1ER_POis",
+    "description": "Enjoy!\n\n\nThe Official NARUTO SHIPPUDEN x Knives Out Exclusive Collab Anime is avaiable October 31\n\n𖣘 NARUTO × Knives Out  \nCollaboration starts at 0:00 on 10/31! 𖣘\n\nItachi/Kakashi gold frame outfits & up to 100 free draws!\n\nTake on the Hidden Leaf Village VS \"Akatsuki\" faction aptitude test!  \nShare for the first time to definitely GET collab gacha ×5 🎁  \nPlus, enter a lottery to win Matsusaka beef or ramen ♨️🍜  \n\n\n\"Forgive me, Sasuke... This is the end.\"  \n\nThe final showdown between Sasuke and Itachi, the Uchiha brothers  \nThat heart-wrenching moment will be recreated in Knives Out once again🔥  \n\nThe two \"Susanoo\" clash together  \nThe Hall of Fame Transport Plane makes its debut!  \n\n10 lucky winners selected by RP will receive a present of local specialty ramen from famous shops!\n\n\n\n#NARUTO#KnivesOut#NewCollaboration",
+    "channel": "STORM MASTER",
+    "published_at": "2026-10-25T15:13:16Z",
+    "youtube_url": "https://www.youtube.com/watch?v=UVp1ER_POis",
+    "embed_url": "https://www.youtube-nocookie.com/embed/UVp1ER_POis",
+    "duration_seconds": 79,
+    "rating": "",
+    "rating_status": "not_applicable",
+    "official_channel_candidate": true
+  },
+  {
     "id": "6H-_VHitfAA",
     "title": "AVENGERS 5: DOOMSDAY Official “Steve Rogers Meets New Avengers” Teaser Trailer (2026)",
     "url": "https://www.youtube.com/watch?v=6H-_VHitfAA",
@@ -2439,5 +2461,21 @@
     "rating": "",
     "rating_status": "not_applicable",
     "official_channel_candidate": true
+  },
+  {
+    "video_id": "apjei5GhWhQ",
+    "title": "ALL Fortnite LIVE Events",
+    "category": "gaming",
+    "type": "gaming",
+    "youtube_url": "https://www.youtube.com/watch?v=apjei5GhWhQ&t=5s",
+    "description": "A video featuring Fortnite live events."
+  },
+  {
+    "video_id": "PCzbiO_DxNE",
+    "title": "Every Fortnite New Trailer",
+    "category": "gaming",
+    "type": "gaming",
+    "youtube_url": "https://www.youtube.com/watch?v=PCzbiO_DxNE",
+    "description": "A collection of Fortnite trailers."
   }
 ]
