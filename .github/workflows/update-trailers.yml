@@ -40,7 +40,7 @@ jobs:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: |
           if [ -z "$TMDB_API_KEY" ]; then
-            echo "TMDB_API_KEY secret is missing or empty."
+            echo "TMDB_API_KEY is missing or empty."
             exit 1
           fi
 
@@ -54,7 +54,7 @@ jobs:
           echo "TMDB API status: $STATUS"
 
           if [ "$STATUS" != "200" ]; then
-            echo "TMDB API test failed. Check your TMDB API key."
+            echo "TMDB API test failed."
             exit 1
           fi
 
