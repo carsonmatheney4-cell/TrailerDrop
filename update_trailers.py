@@ -1,4 +1,3 @@
-
 import json
 import os
 import re
@@ -17,13 +16,15 @@ from pathlib import Path
 OUTPUT = Path("trailers.json")
 MAX_VIDEOS = 10000
 TIMEOUT = 20
-USER_AGENT = "TrailerDrop/3.0"
+USER_AGENT = "TrailerDrop/4.0"
 
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "").strip()
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "").strip()
 BACKFILL = os.environ.get("YOUTUBE_BACKFILL", "false").lower() == "true"
 
 ALLOWED_MOVIE_RATINGS = {"G", "PG", "PG-13"}
+BLOCKED_MOVIE_RATINGS = {"R", "NC-17", "X"}
+MIN_FRANCHISE_RATINGS = 2
 
 EXCLUDED_TERMS = [
     "reaction", "reactions", "reacts to", "reacting to",
@@ -94,6 +95,7 @@ GAMING_BACKFILL_QUERIES = [
 
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
 RATING_CACHE = {}
+COLLECTION_CACHE = {}
 
 
 def fetch(url):
@@ -179,35 +181,24 @@ def is_movie_category(category):
 
 def normalize_title(title):
     title = clean_text(title).lower()
-
-    # Remove common trailer labels and technical tags.
     title = re.sub(
         r"\b(official|final|teaser|trailer|4k|hd|uhd|"
         r"exclusive|international|cinematic|announcement|"
-        r"reveal|launch|clip|subtitles|dubbed|"
-        r"vertical|extended|new trailer|movie trailer)\b",
+        r"reveal|launch|clip|subtitles|dubbed|vertical|"
+        r"extended|new trailer|movie trailer)\b",
         " ",
         title,
     )
-
-    # Remove years and common video labels.
     title = re.sub(r"\b(19|20)\d{2}\b", " ", title)
     title = re.sub(r"\b1080p\b|\b720p\b|\b2160p\b", " ", title)
     title = re.sub(r"[\[\](){}:|–—\-!.,\"']", " ", title)
-
     return re.sub(r"\s+", " ", title).strip()
 
 
 def movie_search_title(title):
-    """Extract a likely movie title from a YouTube trailer title."""
     title = clean_text(title)
-
-    # Remove text after common separators used for channel names.
     title = re.split(r"\s+[|]\s+|\s+[-–—]\s+", title, maxsplit=1)[0]
-
-    # Remove bracketed quality labels.
     title = re.sub(r"\[[^\]]*\]|\([^)]*\)", " ", title)
-
     title = re.sub(
         r"\b(official|final|teaser|trailer|4k|hd|uhd|"
         r"exclusive|international|new|movie|film|"
@@ -217,10 +208,8 @@ def movie_search_title(title):
         title,
         flags=re.I,
     )
-
     title = re.sub(r"\b(19|20)\d{2}\b", " ", title)
-    title = re.sub(r"\s+", " ", title).strip(" -:|")
-    return title
+    return re.sub(r"\s+", " ", title).strip(" -:|")
 
 
 def tmdb_request(path, params=None):
@@ -229,28 +218,127 @@ def tmdb_request(path, params=None):
 
     query = dict(params or {})
     query["api_key"] = TMDB_API_KEY
-
     url = "https://api.themoviedb.org/3" + path
     url += "?" + urllib.parse.urlencode(query)
     return request_json(url)
 
 
+def get_us_certifications(movie_id):
+    data = tmdb_request(f"/movie/{movie_id}/release_dates")
+    certifications = []
+
+    for country in data.get("results", []):
+        if country.get("iso_3166_1") != "US":
+            continue
+
+        for release in country.get("release_dates", []):
+            cert = (release.get("certification") or "").strip().upper()
+            if cert:
+                certifications.append(cert)
+
+    return certifications
+
+
+def confirmed_rating(certifications):
+    """Return an allowed rating, a blocked rating, or empty if unknown."""
+    # A blocked US certification always wins if TMDB lists conflicting data.
+    for cert in certifications:
+        if cert in BLOCKED_MOVIE_RATINGS:
+            return cert
+
+    for cert in certifications:
+        if cert in ALLOWED_MOVIE_RATINGS:
+            return cert
+
+    return ""
+
+
+def franchise_estimate(collection_id, current_movie_id):
+    """
+    Conservative fallback:
+    require at least two OTHER movies with US certifications,
+    and require every discovered certification to be G, PG, or PG-13.
+    Any mature rating or unclear collection history means no estimate.
+    """
+    if not collection_id:
+        return ""
+
+    if collection_id in COLLECTION_CACHE:
+        return COLLECTION_CACHE[collection_id]
+
+    data = tmdb_request(f"/collection/{collection_id}")
+    parts = data.get("parts", [])
+
+    if not parts:
+        COLLECTION_CACHE[collection_id] = ""
+        return ""
+
+    verified_ratings = []
+    seen_ids = set()
+
+    for part in parts:
+        movie_id = part.get("id")
+
+        if not movie_id or movie_id == current_movie_id or movie_id in seen_ids:
+            continue
+
+        seen_ids.add(movie_id)
+
+        certifications = get_us_certifications(movie_id)
+        rating = confirmed_rating(certifications)
+
+        # No certification or a mature certification makes the collection
+        # unsuitable for the automatic fallback.
+        if rating not in ALLOWED_MOVIE_RATINGS:
+            print(
+                f"Franchise estimate rejected: collection {collection_id} "
+                f"contains a movie with a missing or unsuitable rating."
+            )
+            COLLECTION_CACHE[collection_id] = ""
+            return ""
+
+        verified_ratings.append(rating)
+        time.sleep(0.05)
+
+    if len(verified_ratings) < MIN_FRANCHISE_RATINGS:
+        COLLECTION_CACHE[collection_id] = ""
+        return ""
+
+    # Use the most restrictive rating seen in the verified collection.
+    if "PG-13" in verified_ratings:
+        estimate = "PG-13"
+    elif "PG" in verified_ratings:
+        estimate = "PG"
+    else:
+        estimate = "G"
+
+    COLLECTION_CACHE[collection_id] = estimate
+    print(
+        f"Franchise fallback: collection {collection_id} "
+        f"supports estimated {estimate}"
+    )
+    return estimate
+
+
 def movie_rating(title):
     """
-    Return a confirmed allowed US certification.
-    Unknown or unconfirmed ratings remain excluded.
+    Return (rating, status).
+
+    status is 'confirmed', 'estimated', or 'unknown'.
+    Confirmed mature ratings are explicitly blocked.
     """
     if not TMDB_API_KEY:
-        return ""
+        return "", "unknown"
 
     search_title = movie_search_title(title)
     cache_key = normalize_title(search_title)
 
     if not cache_key:
-        return ""
+        return "", "unknown"
 
     if cache_key in RATING_CACHE:
-        return RATING_CACHE[cache_key]
+        cached = RATING_CACHE[cache_key]
+        return cached[0], cached[1]
 
     data = tmdb_request(
         "/search/movie",
@@ -260,12 +348,10 @@ def movie_rating(title):
     candidates = data.get("results", [])
     best_movie = None
     best_score = 0.0
-
     search_normalized = normalize_title(search_title)
 
     for candidate in candidates:
-        candidate_title = candidate.get("title", "")
-        candidate_normalized = normalize_title(candidate_title)
+        candidate_normalized = normalize_title(candidate.get("title", ""))
 
         if not candidate_normalized:
             continue
@@ -274,70 +360,78 @@ def movie_rating(title):
             None, search_normalized, candidate_normalized
         ).ratio()
 
-        # Prefer an exact normalized title match.
         if candidate_normalized == search_normalized:
             score = 1.0
 
+        # Avoid accepting weak or ambiguous title matches.
         if score > best_score:
             best_score = score
             best_movie = candidate
 
-    if not best_movie or best_score < 0.65:
+    if not best_movie or best_score < 0.80:
         print(
-            f"Movie rating unknown: '{title}' "
-            f"(TMDB match score {best_score:.2f})"
+            f"Movie hidden: uncertain TMDB match for '{title}' "
+            f"(score {best_score:.2f})"
         )
-        RATING_CACHE[cache_key] = ""
-        return ""
+        RATING_CACHE[cache_key] = ("", "unknown")
+        return "", "unknown"
 
     movie_id = best_movie.get("id")
     matched_title = best_movie.get("title", "")
 
     if not movie_id:
-        RATING_CACHE[cache_key] = ""
-        return ""
+        RATING_CACHE[cache_key] = ("", "unknown")
+        return "", "unknown"
 
-    release_data = tmdb_request(
-        f"/movie/{movie_id}/release_dates"
-    )
+    certifications = get_us_certifications(movie_id)
 
-    certifications = []
-
-    for country in release_data.get("results", []):
-        if country.get("iso_3166_1") != "US":
-            continue
-
-        for release in country.get("release_dates", []):
-            cert = (
-                release.get("certification") or ""
-            ).strip().upper()
-
-            if cert:
-                certifications.append(cert)
-
-    # Use a rating only when the US certification is allowed.
-    rating = next(
-        (
-            cert for cert in certifications
-            if cert in ALLOWED_MOVIE_RATINGS
-        ),
+    # If a mature rating is known, do not use franchise history to override it.
+    blocked = next(
+        (cert for cert in certifications if cert in BLOCKED_MOVIE_RATINGS),
         "",
     )
-
-    if rating:
+    if blocked:
         print(
-            f"Movie accepted: '{title}' -> "
-            f"{matched_title} ({rating})"
+            f"Movie blocked: '{title}' -> {matched_title} "
+            f"(confirmed US rating {blocked})"
         )
-    else:
-        print(
-            f"Movie excluded: '{title}' -> "
-            f"{matched_title}; no confirmed allowed US rating"
-        )
+        RATING_CACHE[cache_key] = ("", "blocked")
+        return "", "blocked"
 
-    RATING_CACHE[cache_key] = rating
+    official = next(
+        (cert for cert in certifications if cert in ALLOWED_MOVIE_RATINGS),
+        "",
+    )
+    if official:
+        print(
+            f"Movie accepted: '{title}' -> {matched_title} "
+            f"(confirmed {official})"
+        )
+        RATING_CACHE[cache_key] = (official, "confirmed")
+        return official, "confirmed"
+
+    # Only use franchise history when no official rating was found.
+    details = tmdb_request(f"/movie/{movie_id}")
+    collection = details.get("belongs_to_collection") or {}
+    collection_id = collection.get("id")
+
+    estimate = franchise_estimate(collection_id, movie_id)
+
+    if estimate:
+        print(
+            f"Movie accepted with ESTIMATE: '{title}' -> "
+            f"{matched_title} (estimated {estimate})"
+        )
+        RATING_CACHE[cache_key] = (estimate, "estimated")
+        return estimate, "estimated"
+
+    print(
+        f"Movie hidden: no confirmed rating or safe franchise estimate "
+        f"for '{title}' -> {matched_title}"
+    )
+    RATING_CACHE[cache_key] = ("", "unknown")
     time.sleep(0.05)
-    return rating
+    return "", "unknown"
 
 
 def allowed_video(video):
@@ -350,14 +444,25 @@ def allowed_video(video):
         return False
 
     if is_movie_category(video.get("category", "")):
-        rating = movie_rating(title)
+        rating, status = movie_rating(title)
 
         if rating not in ALLOWED_MOVIE_RATINGS:
+            video.pop("rating", None)
+            video.pop("rating_status", None)
+            video.pop("estimated_rating", None)
             return False
 
         video["rating"] = rating
+        video["rating_status"] = status
+
+        if status == "estimated":
+            video["estimated_rating"] = rating
+        else:
+            video.pop("estimated_rating", None)
     else:
         video.pop("rating", None)
+        video.pop("rating_status", None)
+        video.pop("estimated_rating", None)
 
     return True
 
@@ -419,18 +524,15 @@ def youtube_video_details(video_ids):
 
     for start in range(0, len(ids), 50):
         batch = ids[start:start + 50]
-
         params = {
             "part": "snippet",
             "id": ",".join(batch),
             "key": YOUTUBE_API_KEY,
         }
-
         url = (
             "https://www.googleapis.com/youtube/v3/videos?"
             + urllib.parse.urlencode(params)
         )
-
         data = request_json(url)
 
         for item in data.get("items", []):
@@ -445,38 +547,29 @@ def read_feed(feed):
     try:
         root = ET.fromstring(fetch(feed["url"]))
     except (
-        urllib.error.URLError,
-        TimeoutError,
-        OSError,
-        ET.ParseError,
+        urllib.error.URLError, TimeoutError, OSError, ET.ParseError
     ) as exc:
         print(f"Feed unavailable: {feed['name']}: {exc}")
         return found
 
     entries = root.findall(".//item")
     entries += root.findall(f".//{ATOM_NS}entry")
-
     embedded_ids = set()
     entry_info = []
 
     for entry in entries:
         title_el = entry.find("title")
-
         if title_el is None:
             title_el = entry.find(f"{ATOM_NS}title")
 
         article_title = (
-            clean_text(title_el.text or "")
-            if title_el is not None else ""
+            clean_text(title_el.text or "") if title_el is not None else ""
         )
 
         link = ""
         link_el = entry.find("link")
-
         if link_el is not None:
-            link = (
-                link_el.get("href") or link_el.text or ""
-            ).strip()
+            link = (link_el.get("href") or link_el.text or "").strip()
 
         if not link:
             atom_link = entry.find(f"{ATOM_NS}link")
@@ -484,32 +577,22 @@ def read_feed(feed):
                 link = atom_link.get("href", "").strip()
 
         published = ""
-
         for tag in (
-            "pubDate",
-            f"{ATOM_NS}published",
-            f"{ATOM_NS}updated",
+            "pubDate", f"{ATOM_NS}published", f"{ATOM_NS}updated"
         ):
             date_el = entry.find(tag)
-
             if date_el is not None and date_el.text:
                 published = date_el.text
                 break
 
         ids = extract_video_ids(ET.tostring(entry, encoding="unicode"))
-
         direct_id = video_id_from(link)
-
         if direct_id:
             ids.add(direct_id)
 
         id_el = entry.find(f"{ATOM_NS}id")
-
         if id_el is not None and id_el.text:
-            match = re.search(
-                r"yt:video:([A-Za-z0-9_-]{11})",
-                id_el.text,
-            )
+            match = re.search(r"yt:video:([A-Za-z0-9_-]{11})", id_el.text)
             if match:
                 ids.add(match.group(1))
 
@@ -521,30 +604,24 @@ def read_feed(feed):
     for article_title, published, ids in entry_info:
         for video_id in ids:
             snippet = details.get(video_id, {})
-            video_title = clean_text(snippet.get("title", ""))
-
-            if not video_title:
-                video_title = article_title
+            video_title = clean_text(snippet.get("title", "")) or article_title
 
             video = make_video(
-                video_id=video_id,
-                title=video_title,
-                published=snippet.get("publishedAt", published),
-                category=feed["category"],
-                source=feed["name"],
+                video_id,
+                video_title,
+                snippet.get("publishedAt", published),
+                feed["category"],
+                feed["name"],
             )
-
             if video:
                 found.append(video)
 
     unique = {video["id"]: video for video in found}
-
     print(
         f"{feed['name']}: {len(entries)} entries, "
         f"{len(embedded_ids)} YouTube links, "
         f"{len(unique)} eligible videos"
     )
-
     return list(unique.values())
 
 
@@ -568,7 +645,6 @@ def search_youtube(query, category):
         "https://www.googleapis.com/youtube/v3/search?"
         + urllib.parse.urlencode(params)
     )
-
     data = request_json(url)
 
     if data.get("error"):
@@ -576,19 +652,16 @@ def search_youtube(query, category):
         return []
 
     found = []
-
     for item in data.get("items", []):
         snippet = item.get("snippet", {})
         video_id = item.get("id", {}).get("videoId", "")
-
         video = make_video(
-            video_id=video_id,
-            title=snippet.get("title", ""),
-            published=snippet.get("publishedAt", ""),
-            category=category,
-            source=snippet.get("channelTitle", "YouTube"),
+            video_id,
+            snippet.get("title", ""),
+            snippet.get("publishedAt", ""),
+            category,
+            snippet.get("channelTitle", "YouTube"),
         )
-
         if video:
             found.append(video)
 
@@ -603,13 +676,11 @@ def load_existing():
     try:
         data = json.loads(OUTPUT.read_text(encoding="utf-8"))
         videos = data.get("videos", [])
-
         return {
             item["id"]: item
             for item in videos
             if isinstance(item, dict) and item.get("id")
         }
-
     except (OSError, ValueError, TypeError) as exc:
         print(f"Could not read existing JSON: {exc}")
         return {}
@@ -620,7 +691,6 @@ def save_output(videos):
         "updated": datetime.now(timezone.utc).isoformat(),
         "videos": videos,
     }
-
     OUTPUT.write_text(
         json.dumps(data, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
@@ -636,6 +706,7 @@ def main():
     existing = load_existing()
     videos_by_id = {}
 
+    # Re-check old videos, so newly confirmed mature ratings are removed.
     for video in existing.values():
         if allowed_video(video):
             videos_by_id[video["id"]] = video
@@ -644,17 +715,14 @@ def main():
         for video in read_feed(feed):
             videos_by_id[video["id"]] = video
 
-    # Searches run only when manually enabled.
     if BACKFILL:
         queries = (
             [(q, "Movie Trailers") for q in MOVIE_BACKFILL_QUERIES]
             + [(q, "Gaming") for q in GAMING_BACKFILL_QUERIES]
         )
-
         for query, category in queries:
             for video in search_youtube(query, category):
                 videos_by_id[video["id"]] = video
-
             time.sleep(0.3)
     else:
         print(
@@ -667,10 +735,8 @@ def main():
 
     for video in videos_by_id.values():
         video_id = video.get("id")
-
         if not video_id or video_id in seen:
             continue
-
         if allowed_video(video):
             seen.add(video_id)
             cleaned.append(video)
@@ -679,7 +745,6 @@ def main():
         key=lambda video: video.get("published", ""),
         reverse=True,
     )
-
     cleaned = cleaned[:MAX_VIDEOS]
     save_output(cleaned)
 
@@ -687,9 +752,14 @@ def main():
         1 for video in cleaned
         if is_movie_category(video.get("category", ""))
     )
+    estimated = sum(
+        1 for video in cleaned
+        if video.get("rating_status") == "estimated"
+    )
     gaming = len(cleaned) - movies
 
     print(f"Final movie trailers: {movies}")
+    print(f"Estimated movie ratings: {estimated}")
     print(f"Final gaming trailers: {gaming}")
     print(f"Saved {len(cleaned)} eligible videos to {OUTPUT}")
 
