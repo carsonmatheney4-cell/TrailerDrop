@@ -121,47 +121,55 @@ def tmdb_request(endpoint, params=None):
 # ============================================================
 
 
+
 def load_trailers():
     if not TRAILERS_FILE.exists():
         return []
 
+    content = TRAILERS_FILE.read_text(encoding="utf-8")
+
     try:
-        with TRAILERS_FILE.open("r", encoding="utf-8") as file:
-            content = file.read()
+        data = json.loads(content)
+    except json.JSONDecodeError as original_error:
+        stripped = content.rstrip()
 
+        if not stripped.endswith("]") and stripped.endswith("&#93;"):
+            corrected = stripped[:-5] + "]" + content[len(stripped):]
+        else:
+            corrected = None
+
+        if corrected is None:
+            raise RuntimeError(
+                "JSON is invalid, and the expected escaped bracket "
+                "was not found in the actual file. "
+                f"Original error: {original_error}"
+            ) from original_error
+
+        # Validate before modifying the original file.
         try:
-            data = json.loads(content)
+            data = json.loads(corrected)
+        except json.JSONDecodeError as repair_error:
+            raise RuntimeError(
+                "The bracket correction did not fix the JSON. "
+                f"Repair error: {repair_error}"
+            ) from repair_error
 
-        except json.JSONDecodeError as error:
-            start = max(0, error.pos - 300)
-            end = min(len(content), error.pos + 300)
+        backup = TRAILERS_FILE.with_suffix(".json.bak")
+        if not backup.exists():
+            backup.write_text(content, encoding="utf-8")
 
-            print("\n========== JSON ERROR DETAILS ==========")
-            print(f"File: {TRAILERS_FILE}")
-            print(f"Error: {error.msg}")
-            print(f"Line: {error.lineno}")
-            print(f"Column: {error.colno}")
-            print(f"Character position: {error.pos}")
-            print(f"File length: {len(content)} characters")
-            print("Text around the error:")
-            print(repr(content[start:end]))
-            print("\n========== END JSON ERROR DETAILS ==========")
-            raise
+        TRAILERS_FILE.write_text(corrected, encoding="utf-8")
+        print("JSON repaired and original backed up.")
 
-        if isinstance(data, list):
-            return data
+    if isinstance(data, list):
+        return data
 
-        if isinstance(data, dict):
-            for key in ("videos", "trailers", "results"):
-                if isinstance(data.get(key), list):
-                    return data[key]
+    if isinstance(data, dict):
+        for key in ("videos", "trailers", "results"):
+            if isinstance(data.get(key), list):
+                return data[key]
 
-        raise ValueError("Unrecognized trailers.json structure.")
-
-    except (OSError, json.JSONDecodeError, ValueError) as error:
-        raise RuntimeError(
-            f"Could not safely load trailers.json: {error}"
-        ) from error
+    raise ValueError("Unrecognized trailers.json structure.")
 
 
 def save_trailers(videos):
