@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-29T00:39:28.430816+00:00",
+  "updated": "2026-10-29T00:55:38.463842+00:00",
   "videos": [
     {
       "id": "VME_1Vro9kw",
@@ -288,7 +288,8 @@
       "published": "2026-10-28T18:59:38+00:00",
       "category": "Movie Trailers",
       "source": "ComingSoon",
-      "rating": "PG-13"
+      "rating": "PG-13",
+      "rating_status": "confirmed"
     },
     {
       "id": "8UZJpt19GSs",
@@ -325,7 +326,8 @@
       "published": "2026-10-28T18:00:10+00:00",
       "category": "Movie Trailers",
       "source": "Maverick Movies",
-      "rating": "PG-13"
+      "rating": "PG-13",
+      "rating_status": "confirmed"
     },
     {
       "id": "eSL5Np0yu1A",
@@ -814,6 +816,18 @@
       "source": "Ansh Lethal"
     },
     {
+      "id": "GfRfgzvmWtw",
+      "title": "JUMANJI: OPEN WORLD | Official Trailer 2 (2026) 4K",
+      "url": "https://www.youtube.com/watch?v=GfRfgzvmWtw",
+      "thumbnail": "https://i.ytimg.com/vi/GfRfgzvmWtw/hqdefault.jpg",
+      "published": "2026-10-28T13:06:55+00:00",
+      "category": "Movie Trailers",
+      "source": "JoBlo",
+      "rating": "PG-13",
+      "rating_status": "estimated",
+      "estimated_rating": "PG-13"
+    },
+    {
       "id": "nIw1O3zvOfE",
       "title": "JUMANJI: OPEN WORLD - New Trailer (4K)",
       "url": "https://www.youtube.com/watch?v=nIw1O3zvOfE",
@@ -902,7 +916,8 @@
       "published": "2026-10-28T08:30:05+00:00",
       "category": "Movie Trailers",
       "source": "Movies Trailers ",
-      "rating": "PG"
+      "rating": "PG",
+      "rating_status": "confirmed"
     },
     {
       "id": "mJuIsFQEWQg",
@@ -1290,7 +1305,8 @@
       "published": "2026-10-27T15:30:29+00:00",
       "category": "Movie Trailers",
       "source": "Animation Movie Trailers",
-      "rating": "PG-13"
+      "rating": "PG-13",
+      "rating_status": "confirmed"
     },
     {
       "id": "ilKsaz5wloQ",
@@ -1983,7 +1999,7 @@
       "thumbnail": "https://i.ytimg.com/vi/jq5oCjhQtIc/hqdefault.jpg",
       "published": "2026-10-22T16:00:07+00:00",
       "category": "Gaming",
-      "source": "Amazon MGM Studios"
+      "source": "GeekTyrant"
     },
     {
       "id": "qgJBFa952mY",
@@ -2344,7 +2360,8 @@
       "published": "2026-10-13T18:06:44+00:00",
       "category": "Movie Trailers",
       "source": "JoBlo",
-      "rating": "PG"
+      "rating": "PG",
+      "rating_status": "confirmed"
     },
     {
       "id": "gDJ-ini7fF0",
