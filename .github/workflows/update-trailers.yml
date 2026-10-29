@@ -37,6 +37,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           YOUTUBE_BACKFILL: ${{ github.event_name == 'workflow_dispatch' && inputs.backfill || false }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: python update_trailers.py
 
       - name: Save updated trailer data
