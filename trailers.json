@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-29T00:55:38.463842+00:00",
+  "updated": "2026-10-29T00:57:32.006745+00:00",
   "videos": [
     {
       "id": "VME_1Vro9kw",
@@ -81,6 +81,15 @@
       "published": "2026-10-28T23:50:05+00:00",
       "category": "Gaming",
       "source": "Games Parade"
+    },
+    {
+      "id": "wJy7Yf6CkoE",
+      "title": "Wild Blue Skies | Official Nintendo Switch Launch Trailer",
+      "url": "https://www.youtube.com/watch?v=wJy7Yf6CkoE",
+      "thumbnail": "https://i.ytimg.com/vi/wJy7Yf6CkoE/hqdefault.jpg",
+      "published": "2026-10-28T23:50:02+00:00",
+      "category": "Gaming",
+      "source": "NexusGamingHQ"
     },
     {
       "id": "1A9wT4UpYuo",
@@ -1999,7 +2008,7 @@
       "thumbnail": "https://i.ytimg.com/vi/jq5oCjhQtIc/hqdefault.jpg",
       "published": "2026-10-22T16:00:07+00:00",
       "category": "Gaming",
-      "source": "GeekTyrant"
+      "source": "Amazon MGM Studios"
     },
     {
       "id": "qgJBFa952mY",
