@@ -1,198 +1,371 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TrailerDrop — New trailers, in one place</title>
-<style>
-:root{color-scheme:dark;--bg:#0b0d12;--panel:#151923;--muted:#9ba5b7;--line:#292f3d;--accent:#8b5cf6;--accent2:#22d3ee}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#17152b 0,#0b0d12 52%);color:#f7f8fc;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-header{padding:30px 18px 20px;max-width:1100px;margin:auto} .brand{font-weight:900;letter-spacing:-1.2px;font-size:clamp(2rem,6vw,3.5rem)}.brand span{color:var(--accent2)}.sub{color:var(--muted);margin-top:4px}
-main{max-width:1100px;margin:auto;padding:0 18px 48px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
-input,select,button{font:inherit;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#151923;color:#f7f8fc}
-input{flex:1;min-width:180px}button{cursor:pointer;font-weight:700}button.active,button.primary{background:var(--accent);border-color:var(--accent)}button:hover{filter:brightness(1.12)}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.tab{background:transparent}
-.notice{background:#121722;border:1px solid var(--line);border-radius:14px;padding:14px;color:#cbd3e1;margin-bottom:20px;font-size:.92rem}
-.status{color:var(--muted);font-size:.9rem;margin:10px 0 16px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:16px}
-.card{overflow:hidden;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#171c28,#10131b);display:flex;flex-direction:column;min-width:0}
-.thumb{width:100%;aspect-ratio:16/9;object-fit:cover;background:#222839}.placeholder{aspect-ratio:16/9;display:grid;place-items:center;background:linear-gradient(135deg,#272044,#102a35);font-size:2.5rem}
-.content{padding:13px;display:flex;flex-direction:column;gap:8px;flex:1}.title{font-weight:800;line-height:1.3}.meta{color:var(--muted);font-size:.82rem}.watch{width:100%;margin-top:auto;background:#252b3a;border-color:#3b4357}
-.player{width:100%;aspect-ratio:16/9;border:0;background:#000}.empty{border:1px dashed #394153;border-radius:14px;padding:28px;text-align:center;color:var(--muted);grid-column:1/-1}
-details{background:#121722;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:26px}summary{cursor:pointer;font-weight:800}details p,details li{color:#c2cada}small{color:var(--muted)}footer{max-width:1100px;margin:auto;padding:20px 18px 40px;color:var(--muted);font-size:.82rem}
-@media(max-width:500px){.toolbar>*{width:100%}.grid{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<header>
-  <div class="brand">Trailer<span>Drop</span></div>
-  <div class="sub">Movie trailers • Game trailers • Nintendo Directs</div>
-</header>
-<main>
-  <div class="notice"><strong>Free version:</strong> no Google Cloud, no paid API key, and no subscription. This page checks public feeds through a free feed-conversion service. Availability and refresh speed depend on that service and the publishers.</div>
-  <div class="toolbar">
-    <input id="search" type="search" placeholder="Search trailers…" aria-label="Search trailers">
-    <select id="sort" aria-label="Sort results"><option value="new">Newest first</option><option value="old">Oldest first</option></select>
-    <button id="refresh" class="primary">Refresh feeds</button>
-  </div>
-  <div class="tabs" role="group" aria-label="Categories">
-    <button class="tab active" data-category="all">Everything</button>
-    <button class="tab" data-category="movies">Movie trailers</button>
-    <button class="tab" data-category="games">Game trailers</button>
-    <button class="tab" data-category="nintendo">Nintendo Directs</button>
-  </div>
-  <div id="status" class="status">Loading public feeds…</div>
-  <section id="grid" class="grid" aria-live="polite"></section>
-  <details>
-    <summary>How this free version works</summary>
-    <p>It checks a small set of public entertainment feeds and shows matching posts. A post is shown only when the page can identify a YouTube video to embed. RSS feeds are not a complete directory, so some new trailers may be missed.</p>
-    <p><strong>Age suitability:</strong> the site hides posts whose titles contain certain adult-content terms, but title filtering is imperfect and does not verify official film ratings. Please check with a parent or guardian if you're unsure about a title.</p>
-    <p><strong>Privacy:</strong> searches run in this page. Feed requests go to the public feed service and the source sites. The embedded video player is provided by YouTube; playback may be unavailable if the uploader disables embedding.</p>
-  </details>
-</main>
-<footer>TrailerDrop is an unofficial fan project and is not affiliated with Nintendo, YouTube, movie studios, or game publishers.</footer>
-
-<script>
-let items = [];
-let category = "all";
-let opened = new Set();
-const $ = id => document.getElementById(id);
-
-function render() {
-  const query = $("search").value.trim().toLowerCase();
-  let filtered = items.filter(x =>
-    (category === "all" || x.category === category) &&
-    (!query || (x.title + " " + x.source).toLowerCase().includes(query))
-  );
-
-  filtered.sort((a, b) =>
-    $("sort").value === "new" ? b.date - a.date : a.date - b.date
-  );
-
-  $("grid").innerHTML = "";
-
-  if (!filtered.length) {
-    $("grid").innerHTML =
-      '<div class="empty">No embedded trailers yet. The updater may still be checking feeds, or the feeds may not contain embeddable video IDs.</div>';
-    return;
-  }
-
-  for (const x of filtered) {
-    const card = document.createElement("article");
-    card.className = "card";
-
-    if (opened.has(x.id)) {
-      const iframe = document.createElement("iframe");
-      iframe.className = "player";
-      iframe.src = "https://www.youtube-nocookie.com/embed/" +
-        encodeURIComponent(x.id);
-      iframe.title = x.title;
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      iframe.allowFullscreen = true;
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      card.appendChild(iframe);
-    } else {
-      const img = document.createElement("img");
-      img.className = "thumb";
-      img.src = "https://i.ytimg.com/vi/" + x.id + "/hqdefault.jpg";
-      img.alt = "Video thumbnail";
-      img.loading = "lazy";
-      card.appendChild(img);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10111a">
+  <meta name="description" content="Discover eligible movie and gaming trailers on TrailerDrop.">
+  <title>TrailerDrop — Movie & Gaming Trailers</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10111a;
+      --panel: #191b28;
+      --panel-hover: #222538;
+      --text: #f5f6ff;
+      --muted: #a5a9c1;
+      --accent: #9b8cff;
+      --border: #303349;
     }
 
-    const body = document.createElement("div");
-    body.className = "content";
+    * { box-sizing: border-box; }
 
-    const title = document.createElement("div");
-    title.className = "title";
-    title.textContent = x.title;
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    }
 
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    meta.textContent = x.source + " • " +
-      (x.date ? new Date(x.date).toLocaleDateString() : "Date unavailable");
+    header {
+      padding: 30px 18px 22px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: #141522;
+    }
 
-    const btn = document.createElement("button");
-    btn.className = "watch";
-    btn.textContent = opened.has(x.id) ? "Close player" : "Watch here";
-    btn.onclick = () => {
-      if (opened.has(x.id)) opened.delete(x.id);
-      else opened.add(x.id);
-      render();
-    };
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: -1.5px;
+    }
 
-    body.append(title, meta, btn);
-    card.appendChild(body);
-    $("grid").appendChild(card);
-  }
-}
+    h1 span { color: var(--accent); }
 
-async function refresh() {
-  $("refresh").disabled = true;
-  $("status").textContent = "Loading the latest saved trailer data…";
+    header p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
 
-  try {
-    const response = await fetch("trailers.json?updated=" + Date.now(), {
-      cache: "no-store"
-    });
-    if (!response.ok) throw new Error("Trailer data not available");
+    main {
+      width: min(1200px, 100%);
+      margin: auto;
+      padding: 22px 16px 50px;
+    }
 
-    const data = await response.json();
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
 
-    items = (data.videos || [])
-      .filter(x => x.videoId && x.title)
-      .map(x => {
-        const title = x.title;
-        const text = title.toLowerCase();
-        let cat = "games";
+    button, input {
+      font: inherit;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+    }
 
-        if (/nintendo direct|indie world|partner showcase|treehouse live|direct presentation/.test(text)) {
-          cat = "nintendo";
-        } else if (/movie|film|cinema|official trailer|teaser|red band/.test(text)) {
-          cat = "movies";
+    input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    button { cursor: pointer; }
+
+    button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #10111a;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 30px 0 15px;
+      font-size: 1.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+      transition: transform .15s, background .15s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      background: var(--panel-hover);
+    }
+
+    .thumbnail {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #25273a;
+    }
+
+    .card-content { padding: 14px; }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: .82rem;
+      margin-bottom: 12px;
+    }
+
+    .watch {
+      display: inline-block;
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .watch:hover { text-decoration: underline; }
+
+    .message {
+      color: var(--muted);
+      padding: 20px 0;
+    }
+
+    footer {
+      padding: 24px 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+      font-size: .85rem;
+    }
+
+    footer a { color: var(--accent); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: none; }
+      .card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Trailer<span>Drop</span></h1>
+    <p>Your feed for movie and gaming trailers.</p>
+  </header>
+
+  <main>
+    <div class="controls" aria-label="Trailer filters">
+      <button class="active" data-category="All">All</button>
+      <button data-category="Movie Trailers">Movies</button>
+      <button data-category="Gaming">Gaming</button>
+      <input id="search" type="search" placeholder="Search trailers..." aria-label="Search trailers">
+    </div>
+
+    <p id="status" class="message" role="status">Loading trailers...</p>
+    <div id="results"></div>
+  </main>
+
+  <footer>
+    TrailerDrop is an independent fan project. Movie data and ratings are
+    provided through <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDB</a>.
+    This product uses the TMDB API but is not endorsed or certified by TMDB.
+    <div id="updated" style="margin-top:8px"></div>
+  </footer>
+
+  <script>
+    const ALLOWED_RATINGS = new Set(["G", "PG", "PG-13"]);
+    const EXCLUDED_TERMS = [
+      "reaction", "reactions", "reacts to", "reacting to",
+      "trailer reaction", "review", "reviews", "movie review",
+      "game review", "breakdown", "explained", "ending explained",
+      "first time watching", "watch along", "commentary",
+      "tier list", "ranking every", "honest review"
+    ];
+
+    let allVideos = [];
+    let selectedCategory = "All";
+
+    const results = document.getElementById("results");
+    const status = document.getElementById("status");
+    const search = document.getElementById("search");
+
+    function isMovie(video) {
+      const category = String(video.category || "").toLowerCase();
+      return category.includes("movie") || category.includes("film");
+    }
+
+    function isExcluded(title) {
+      const lower = String(title || "").toLowerCase();
+      return EXCLUDED_TERMS.some(term => lower.includes(term));
+    }
+
+    function isEligible(video) {
+      if (!video || !video.id || !video.title || isExcluded(video.title)) {
+        return false;
+      }
+
+      // Movie ratings must have been confirmed by the collector.
+      if (isMovie(video)) {
+        return ALLOWED_RATINGS.has(String(video.rating || "").toUpperCase());
+      }
+
+      return true;
+    }
+
+    function safeYouTubeUrl(video) {
+      // Construct the watch URL from a validated YouTube video ID.
+      if (!/^[A-Za-z0-9_-]{11}$/.test(video.id)) return "";
+      return `https://www.youtube.com/watch?v=${video.id}`;
+    }
+
+    function makeCard(video) {
+      const article = document.createElement("article");
+      article.className = "card";
+
+      const link = safeYouTubeUrl(video);
+      if (!link) return null;
+
+      const image = document.createElement("img");
+      image.className = "thumbnail";
+      image.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+      image.alt = "";
+      image.loading = "lazy";
+      image.onerror = () => {
+        image.style.display = "none";
+      };
+
+      const content = document.createElement("div");
+      content.className = "card-content";
+
+      const heading = document.createElement("h3");
+      heading.textContent = video.title;
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const details = [video.category || "Trailer"];
+      if (isMovie(video)) details.push(video.rating);
+      if (video.published) {
+        const date = new Date(video.published);
+        if (!Number.isNaN(date.getTime())) {
+          details.push(date.toLocaleDateString());
+        }
+      }
+      meta.textContent = details.join(" · ");
+
+      const watch = document.createElement("a");
+      watch.className = "watch";
+      watch.href = link;
+      watch.target = "_blank";
+      watch.rel = "noopener noreferrer";
+      watch.textContent = "Watch trailer ↗";
+
+      content.append(heading, meta, watch);
+      article.append(image, content);
+      return article;
+    }
+
+    function render() {
+      const term = search.value.trim().toLowerCase();
+
+      const filtered = allVideos.filter(video => {
+        if (!isEligible(video)) return false;
+
+        const category = isMovie(video) ? "Movie Trailers" : video.category;
+        if (selectedCategory !== "All" && category !== selectedCategory) {
+          return false;
         }
 
-        return {
-          id: x.videoId,
-          title,
-          category: cat,
-          source: (x.source || "").includes("comingsoon") ? "ComingSoon" :
-                  (x.source || "").includes("joblo") ? "JoBlo" :
-                  (x.source || "").includes("firstshowing") ? "FirstShowing" :
-                  (x.source || "").includes("nintendo") ? "Nintendo News" :
-                  (x.source || "").includes("geektyrant") ? "GeekTyrant" :
-                  (x.source || "").includes("wegotthiscovered") ? "We Got This Covered" :
-                  "TrailerDrop feed",
-          date: Date.parse(x.published || "") || 0
-        };
+        return video.title.toLowerCase().includes(term);
       });
 
-    $("status").textContent =
-      items.length + " embedded trailers loaded. Feed data last updated: " +
-      (data.updated ? new Date(data.updated).toLocaleString() : "unknown") + ".";
-  } catch (error) {
-    $("status").textContent =
-      "Couldn't load trailers.json yet. Check that the file exists in the repository and try again.";
-    items = [];
-  }
+      results.replaceChildren();
 
-  $("refresh").disabled = false;
-  render();
-}
+      if (!filtered.length) {
+        status.textContent = allVideos.length
+          ? "No trailers match those filters."
+          : "No eligible trailers are available yet.";
+        return;
+      }
 
-document.querySelectorAll("[data-category]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll("[data-category]").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    category = btn.dataset.category;
-    render();
-  });
-});
+      status.textContent = `${filtered.length} trailer${filtered.length === 1 ? "" : "s"}`;
 
-$("search").addEventListener("input", render);
-$("sort").addEventListener("change", render);
-$("refresh").addEventListener("click", refresh);
+      const groups = [
+        { title: "Movie Trailers", videos: filtered.filter(isMovie) },
+        { title: "Gaming", videos: filtered.filter(video => !isMovie(video)) }
+      ];
 
-refresh();
-</script>
+      for (const group of groups) {
+        if (!group.videos.length) continue;
+
+        const section = document.createElement("section");
+        const heading = document.createElement("h2");
+        heading.textContent = group.title;
+
+        const grid = document.createElement("div");
+        grid.className = "grid";
+
+        for (const video of group.videos) {
+          const card = makeCard(video);
+          if (card) grid.append(card);
+        }
+
+        section.append(heading, grid);
+        results.append(section);
+      }
+    }
+
+    async function loadTrailers() {
+      try {
+        const response = await fetch("./trailers.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        allVideos = Array.isArray(data.videos)
+          ? data.videos.filter(isEligible)
+          : [];
+
+        if (data.updated) {
+          const date = new Date(data.updated);
+          document.getElementById("updated").textContent =
+            Number.isNaN(date.getTime())
+              ? ""
+              : `Feed last updated: ${date.toLocaleString()}`;
+        }
+
+        render();
+      } catch (error) {
+        console.error("Could not load trailers:", error);
+        status.textContent =
+          "Couldn't load trailers. Please try again later.";
+      }
+    }
+
+    document.querySelectorAll("button[data-category]").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedCategory = button.dataset.category;
+        document.querySelectorAll("button[data-category]").forEach(item => {
+          item.classList.toggle("active", item === button);
+        });
+        render();
+      });
+    });
+
+    search.addEventListener("input", render);
+    loadTrailers();
+  </script>
 </body>
 </html>
