@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,7 @@
   <meta name="theme-color" content="#10111a">
   <meta name="description" content="Discover eligible movie and gaming trailers on TrailerDrop.">
   <title>TrailerDrop — Movie & Gaming Trailers</title>
+
   <style>
     :root {
       color-scheme: dark;
@@ -17,6 +17,7 @@
       --muted: #a5a9c1;
       --accent: #9b8cff;
       --border: #303349;
+      --estimated: #ffd479;
     }
 
     * { box-sizing: border-box; }
@@ -129,6 +130,28 @@
       color: var(--muted);
       font-size: .82rem;
       margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .rating-badge {
+      display: inline-block;
+      padding: 3px 7px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .estimated-badge {
+      display: inline-block;
+      padding: 3px 7px;
+      border: 1px solid #826a35;
+      border-radius: 6px;
+      color: var(--estimated);
+      font-weight: 700;
     }
 
     .watch {
@@ -143,6 +166,13 @@
     .message {
       color: var(--muted);
       padding: 20px 0;
+    }
+
+    .rating-note {
+      color: var(--muted);
+      font-size: .85rem;
+      margin: -10px 0 20px;
+      line-height: 1.5;
     }
 
     footer {
@@ -161,6 +191,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Trailer<span>Drop</span></h1>
@@ -172,8 +203,19 @@
       <button class="active" data-category="All">All</button>
       <button data-category="Movie Trailers">Movies</button>
       <button data-category="Gaming">Gaming</button>
-      <input id="search" type="search" placeholder="Search trailers..." aria-label="Search trailers">
+      <input
+        id="search"
+        type="search"
+        placeholder="Search trailers..."
+        aria-label="Search trailers"
+      >
     </div>
+
+    <p class="rating-note">
+      Movie ratings marked “Estimated” are based on franchise rating history,
+      not an official rating for that specific movie. Movies with confirmed
+      R or NC-17 ratings are excluded.
+    </p>
 
     <p id="status" class="message" role="status">Loading trailers...</p>
     <div id="results"></div>
@@ -181,13 +223,19 @@
 
   <footer>
     TrailerDrop is an independent fan project. Movie data and ratings are
-    provided through <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDB</a>.
+    provided through
+    <a
+      href="https://www.themoviedb.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >TMDB</a>.
     This product uses the TMDB API but is not endorsed or certified by TMDB.
     <div id="updated" style="margin-top:8px"></div>
   </footer>
 
   <script>
     const ALLOWED_RATINGS = new Set(["G", "PG", "PG-13"]);
+
     const EXCLUDED_TERMS = [
       "reaction", "reactions", "reacts to", "reacting to",
       "trailer reaction", "review", "reviews", "movie review",
@@ -214,20 +262,44 @@
     }
 
     function isEligible(video) {
-      if (!video || !video.id || !video.title || isExcluded(video.title)) {
+      if (
+        !video ||
+        typeof video.id !== "string" ||
+        !/^[A-Za-z0-9_-]{11}$/.test(video.id) ||
+        typeof video.title !== "string" ||
+        !video.title.trim() ||
+        isExcluded(video.title)
+      ) {
         return false;
       }
 
-      // Movie ratings must have been confirmed by the collector.
       if (isMovie(video)) {
-        return ALLOWED_RATINGS.has(String(video.rating || "").toUpperCase());
+        const rating = String(video.rating || "").toUpperCase();
+        const ratingStatus = String(video.rating_status || "");
+
+        if (!ALLOWED_RATINGS.has(rating)) {
+          return false;
+        }
+
+        // Confirmed ratings are allowed only in the approved categories.
+        if (ratingStatus === "confirmed") {
+          return true;
+        }
+
+        // An estimated rating must explicitly be marked as estimated.
+        // Unknown or missing rating statuses are not accepted.
+        if (ratingStatus === "estimated") {
+          return String(video.estimated_rating || "").toUpperCase() === rating;
+        }
+
+        return false;
       }
 
+      // Gaming trailers do not need movie ratings.
       return true;
     }
 
     function safeYouTubeUrl(video) {
-      // Construct the watch URL from a validated YouTube video ID.
       if (!/^[A-Za-z0-9_-]{11}$/.test(video.id)) return "";
       return `https://www.youtube.com/watch?v=${video.id}`;
     }
@@ -256,15 +328,36 @@
 
       const meta = document.createElement("div");
       meta.className = "meta";
-      const details = [video.category || "Trailer"];
-      if (isMovie(video)) details.push(video.rating);
-      if (video.published) {
-        const date = new Date(video.published);
-        if (!Number.isNaN(date.getTime())) {
-          details.push(date.toLocaleDateString());
+
+      const category = document.createElement("span");
+      category.textContent = video.category || "Trailer";
+      meta.append(category);
+
+      if (isMovie(video)) {
+        const rating = document.createElement("span");
+        rating.className = "rating-badge";
+        rating.textContent = video.rating;
+        meta.append(rating);
+
+        if (video.rating_status === "estimated") {
+          const estimate = document.createElement("span");
+          estimate.className = "estimated-badge";
+          estimate.textContent = "Estimated";
+          estimate.title =
+            "Based on franchise history, not an official rating for this movie.";
+          meta.append(estimate);
         }
       }
-      meta.textContent = details.join(" · ");
+
+      if (video.published) {
+        const date = new Date(video.published);
+
+        if (!Number.isNaN(date.getTime())) {
+          const dateLabel = document.createElement("span");
+          dateLabel.textContent = date.toLocaleDateString();
+          meta.append(dateLabel);
+        }
+      }
 
       const watch = document.createElement("a");
       watch.className = "watch";
@@ -275,6 +368,7 @@
 
       content.append(heading, meta, watch);
       article.append(image, content);
+
       return article;
     }
 
@@ -285,7 +379,11 @@
         if (!isEligible(video)) return false;
 
         const category = isMovie(video) ? "Movie Trailers" : video.category;
-        if (selectedCategory !== "All" && category !== selectedCategory) {
+
+        if (
+          selectedCategory !== "All" &&
+          category !== selectedCategory
+        ) {
           return false;
         }
 
@@ -301,11 +399,18 @@
         return;
       }
 
-      status.textContent = `${filtered.length} trailer${filtered.length === 1 ? "" : "s"}`;
+      status.textContent =
+        `${filtered.length} trailer${filtered.length === 1 ? "" : "s"}`;
 
       const groups = [
-        { title: "Movie Trailers", videos: filtered.filter(isMovie) },
-        { title: "Gaming", videos: filtered.filter(video => !isMovie(video)) }
+        {
+          title: "Movie Trailers",
+          videos: filtered.filter(isMovie)
+        },
+        {
+          title: "Gaming",
+          videos: filtered.filter(video => !isMovie(video))
+        }
       ];
 
       for (const group of groups) {
@@ -330,16 +435,23 @@
 
     async function loadTrailers() {
       try {
-        const response = await fetch("./trailers.json", { cache: "no-store" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const response = await fetch("./trailers.json", {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
 
         const data = await response.json();
+
         allVideos = Array.isArray(data.videos)
           ? data.videos.filter(isEligible)
           : [];
 
         if (data.updated) {
           const date = new Date(data.updated);
+
           document.getElementById("updated").textContent =
             Number.isNaN(date.getTime())
               ? ""
@@ -357,9 +469,11 @@
     document.querySelectorAll("button[data-category]").forEach(button => {
       button.addEventListener("click", () => {
         selectedCategory = button.dataset.category;
+
         document.querySelectorAll("button[data-category]").forEach(item => {
           item.classList.toggle("active", item === button);
         });
+
         render();
       });
     });
