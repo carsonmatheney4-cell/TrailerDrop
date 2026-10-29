@@ -1,720 +1,1309 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrailerDrop</title>
+  <meta name="theme-color" content="#0b0b10">
+  <title>TrailerDrop — Discover Trailers</title>
+  <meta name="description" content="Discover movie trailers and gaming trailers on TrailerDrop.">
 
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0b10;
+      --panel: #14141d;
+      --panel-light: #1b1b27;
+      --border: #292938;
+      --text: #f5f5f7;
+      --muted: #a4a4b5;
+      --accent: #8b5cf6;
+      --accent-light: #a78bfa;
+      --danger: #fb7185;
+      --success: #4ade80;
+    }
+
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      background: #0b0b10;
-      color: #f5f5f7;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at top, #171126 0, transparent 45%),
+        var(--bg);
+      color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    header {
-      padding: 24px 20px;
-      background: #15151d;
-      border-bottom: 1px solid #292936;
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button,
+    select {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--accent-light);
+      outline-offset: 3px;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 11, 16, 0.92);
+      backdrop-filter: blur(16px);
     }
 
     .header-inner {
-      max-width: 1200px;
+      width: min(1400px, 100%);
+      min-height: 76px;
       margin: auto;
+      padding: 15px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      color: var(--text);
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--accent-light);
+    }
+
+    .header-tagline {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .hero {
+      width: min(1400px, 100%);
+      margin: auto;
+      padding: 52px 24px 28px;
+    }
+
+    .eyebrow {
+      color: var(--accent-light);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     h1 {
-      margin: 0;
-      color: #ff4545;
-      font-size: 32px;
+      margin: 12px 0;
+      font-size: clamp(34px, 6vw, 60px);
+      line-height: 1.03;
+      letter-spacing: -2px;
     }
 
-    header p {
-      margin-bottom: 0;
-      color: #aaaab8;
+    h1 span {
+      color: var(--accent-light);
     }
 
-    main {
-      max-width: 1200px;
-      margin: auto;
-      padding: 24px 18px;
+    .hero p {
+      max-width: 650px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
     }
 
     .controls {
+      width: min(1400px, 100%);
+      margin: auto;
+      padding: 0 24px 28px;
+    }
+
+    .control-panel {
+      display: grid;
+      grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(145px, 200px));
+      gap: 12px;
+      padding: 16px;
+      background: rgba(20, 20, 29, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 8px 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .field input::placeholder {
+      color: #777789;
+    }
+
+    .category-tabs {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 24px;
+      gap: 8px;
+      margin-top: 14px;
     }
 
-    input,
-    select {
-      padding: 12px;
-      border: 1px solid #343442;
-      border-radius: 8px;
-      background: #171720;
+    .tab {
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      font-weight: 700;
+      transition: 0.15s ease;
+    }
+
+    .tab:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .tab.active {
+      border-color: var(--accent);
+      background: var(--accent);
       color: white;
-      font-size: 15px;
     }
 
-    #search {
-      flex: 1;
-      min-width: 180px;
+    .notice {
+      width: min(1400px, 100%);
+      margin: auto;
+      padding: 0 24px 24px;
     }
 
-    .rating-note {
-      margin: 0 0 20px;
-      padding: 12px 14px;
-      background: #171720;
-      border-left: 3px solid #ff4545;
-      border-radius: 5px;
-      color: #c7c7d2;
+    .notice-inner {
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--muted);
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.6;
+      background: rgba(20, 20, 29, 0.65);
     }
 
-    #status {
-      color: #aaaab8;
-      margin-bottom: 18px;
-      font-size: 14px;
+    .notice-inner strong {
+      color: var(--text);
+    }
+
+    main {
+      width: min(1400px, 100%);
+      margin: auto;
+      padding: 0 24px 60px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 0 20px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.6px;
+    }
+
+    .result-count {
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 20px;
     }
 
     .card {
+      min-width: 0;
       overflow: hidden;
-      background: #171720;
-      border: 1px solid #292936;
-      border-radius: 12px;
-      transition: transform 0.18s, border-color 0.18s;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+      transition: transform 0.18s ease, border-color 0.18s ease;
     }
 
     .card:hover {
       transform: translateY(-3px);
-      border-color: #ff4545;
+      border-color: #51416e;
     }
 
-    .thumbnail {
+    .thumbnail-wrap {
       position: relative;
-      width: 100%;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      background: #252530;
+      background: #20202b;
       cursor: pointer;
     }
 
-    .thumbnail img {
+    .thumbnail {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      transition: transform 0.25s ease;
+    }
+
+    .card:hover .thumbnail {
+      transform: scale(1.035);
     }
 
     .play-overlay {
       position: absolute;
       inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.15);
-      transition: background 0.2s;
-    }
-
-    .thumbnail:hover .play-overlay {
-      background: rgba(0, 0, 0, 0.45);
+      display: grid;
+      place-items: center;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+      pointer-events: none;
     }
 
     .play-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 58px;
-      height: 42px;
-      border-radius: 12px;
-      background: #ff2020;
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,0.65);
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.93);
       color: white;
-      font-size: 22px;
-      padding-left: 4px;
+      font-size: 21px;
+      padding-left: 3px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .badges {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-width: calc(100% - 20px);
+      pointer-events: none;
+    }
+
+    .badge {
+      padding: 5px 8px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 6px;
+      background: rgba(9, 9, 15, 0.88);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .badge.movie {
+      color: #ddd0ff;
+    }
+
+    .badge.gaming {
+      color: #86efac;
+    }
+
+    .badge.unrated {
+      color: #fde68a;
+    }
+
+    .badge.estimated {
+      color: #fdba74;
     }
 
     .card-content {
       padding: 15px;
     }
 
-    .card h2 {
-      margin: 0 0 10px;
+    .card h3 {
+      display: -webkit-box;
+      min-height: 44px;
+      margin: 0 0 8px;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       font-size: 17px;
-      line-height: 1.4;
+      line-height: 1.35;
     }
 
-    .badges {
+    .card-description {
+      display: -webkit-box;
+      min-height: 40px;
+      margin: 0 0 14px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .card-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .badge {
-      padding: 5px 8px;
-      border-radius: 5px;
-      background: #292936;
-      color: #dddde7;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--muted);
       font-size: 11px;
-      font-weight: bold;
     }
 
-    .badge.rating {
-      background: #253d30;
-      color: #a8f0c2;
+    .card-actions {
+      display: flex;
+      gap: 8px;
     }
 
-    .badge.estimated {
-      background: #59421d;
-      color: #ffdc91;
+    .action-button {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--panel-light);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
     }
 
-    .watch-button {
-      display: block;
-      width: 100%;
-      padding: 11px;
-      border: none;
-      border-radius: 7px;
-      background: #ff3030;
+    .action-button:hover {
+      border-color: var(--accent);
+    }
+
+    .action-button.primary {
+      flex: 1;
+      border-color: var(--accent);
+      background: var(--accent);
       color: white;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
     }
 
-    .watch-button:hover {
-      background: #df2020;
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 50px 20px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      text-align: center;
+      color: var(--muted);
     }
 
-    .player-section {
+    .empty-state h3 {
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      line-height: 1.6;
+    }
+
+    .empty-state button {
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+    }
+
+    .loading {
+      grid-column: 1 / -1;
+      padding: 40px 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .player-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
       display: none;
-      margin-bottom: 28px;
-      padding: 16px;
-      background: #171720;
-      border: 1px solid #343442;
-      border-radius: 12px;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.86);
     }
 
-    .player-section.active {
-      display: block;
+    .player-modal.open {
+      display: flex;
     }
 
-    .player-heading {
+    .player-box {
+      width: min(1000px, 100%);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--panel);
+    }
+
+    .player-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 12px;
+      padding: 12px 16px;
     }
 
-    .player-heading h2 {
-      margin: 0;
-      font-size: 18px;
+    .player-title {
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .close-button {
-      padding: 8px 12px;
-      border: 1px solid #454552;
-      border-radius: 6px;
-      background: #292936;
+    .close-player {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--panel-light);
       color: white;
-      cursor: pointer;
+      font-size: 22px;
     }
 
-    .video-container {
-      position: relative;
-      width: 100%;
+    .player-frame-wrap {
       aspect-ratio: 16 / 9;
       background: black;
-      overflow: hidden;
-      border-radius: 8px;
     }
 
-    .video-container iframe {
-      position: absolute;
-      inset: 0;
+    .player-frame-wrap iframe {
+      display: block;
       width: 100%;
       height: 100%;
       border: 0;
     }
 
-    .empty {
-      grid-column: 1 / -1;
-      padding: 40px 15px;
-      text-align: center;
-      color: #aaaab8;
-    }
-
     footer {
-      padding: 28px 16px;
-      text-align: center;
-      color: #777784;
+      padding: 25px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
       font-size: 12px;
+      line-height: 1.7;
+      text-align: center;
     }
 
-    @media (max-width: 500px) {
-      h1 {
-        font-size: 27px;
+    footer a {
+      color: var(--accent-light);
+    }
+
+    @media (max-width: 1000px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .header-inner {
+        padding: 14px 16px;
+      }
+
+      .header-tagline {
+        display: none;
+      }
+
+      .hero {
+        padding: 38px 16px 22px;
+      }
+
+      .controls,
+      .notice {
+        padding-right: 16px;
+        padding-left: 16px;
+      }
+
+      .control-panel {
+        grid-template-columns: 1fr 1fr;
+        padding: 12px;
+      }
+
+      .field.search-field {
+        grid-column: 1 / -1;
       }
 
       main {
-        padding: 18px 12px;
+        padding-right: 16px;
+        padding-left: 16px;
       }
 
       .grid {
         grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .card h3 {
+        min-height: auto;
+      }
+
+      .card-description {
+        min-height: auto;
+      }
+
+      .section-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      h1 {
+        letter-spacing: -1.2px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <header>
+  <header class="header">
     <div class="header-inner">
-      <h1>🎬 TrailerDrop</h1>
-      <p>Discover your next favorite trailer.</p>
+      <div>
+        <a class="logo" href="./">Trailer<span>Drop</span></a>
+        <div class="header-tagline">Your next favorite trailer starts here.</div>
+      </div>
+      <div class="header-tagline">Movies · Gaming · Trailers</div>
     </div>
   </header>
 
-  <main>
-    <section id="playerSection" class="player-section">
-      <div class="player-heading">
-        <h2 id="playerTitle">Now playing</h2>
-        <button id="closePlayer" class="close-button" type="button">
-          ✕ Close
-        </button>
+  <section class="hero">
+    <div class="eyebrow">Discover something new</div>
+    <h1>Find your next <span>obsession.</span></h1>
+    <p>
+      Discover upcoming movies, new releases, and gaming trailers.
+      Search, explore, and watch trailers without digging through endless results.
+    </p>
+  </section>
+
+  <section class="controls" aria-label="Trailer filters">
+    <div class="control-panel">
+      <div class="field search-field">
+        <label for="searchInput">Search trailers</label>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search movies, games, or channels..."
+          autocomplete="off"
+        >
       </div>
 
-      <div id="videoContainer" class="video-container"></div>
-    </section>
+      <div class="field">
+        <label for="sortSelect">Sort by</label>
+        <select id="sortSelect">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="title">Title A–Z</option>
+        </select>
+      </div>
 
-    <div class="controls">
-      <input
-        id="search"
-        type="search"
-        placeholder="Search trailers..."
-        aria-label="Search trailers"
-      >
-
-      <select id="categoryFilter" aria-label="Filter by category">
-        <option value="all">All categories</option>
-        <option value="Movies">Movies</option>
-        <option value="Gaming">Gaming</option>
-      </select>
-
-      <select id="sortFilter" aria-label="Sort trailers">
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-        <option value="title">Title A–Z</option>
-      </select>
+      <div class="field">
+        <label for="ratingSelect">Movie rating</label>
+        <select id="ratingSelect">
+          <option value="all">All allowed ratings</option>
+          <option value="G">G only</option>
+          <option value="PG">PG only</option>
+          <option value="PG-13">PG-13 only</option>
+          <option value="R">R only</option>
+          <option value="unrated">Unrated only</option>
+        </select>
+      </div>
     </div>
 
-    <div class="rating-note">
-      <strong>Family-friendly filter:</strong>
-      Movie trailers are shown only when their US rating is G, PG, or PG-13.
-      Unrated movies must meet the site's franchise-rating rules.
-      Estimated ratings are marked. Gaming trailers can appear without a
-      movie rating.
+    <div class="category-tabs" role="group" aria-label="Trailer category">
+      <button class="tab active" type="button" data-category="all">All</button>
+      <button class="tab" type="button" data-category="movie">Movies</button>
+      <button class="tab" type="button" data-category="gaming">Gaming</button>
+    </div>
+  </section>
+
+  <section class="notice">
+    <div class="notice-inner">
+      <strong>Content filter:</strong>
+      Movie ratings alone do not tell you exactly what is in a film.
+      R-rated movies are allowed. Movies rated NC-17 or X are excluded.
+      Movies with unknown ratings may appear as <strong>Unrated</strong>.
+      Gaming trailers do not need a movie rating. This filter cannot guarantee
+      that every trailer is free of sexual content or strong language, so check
+      the official rating and content advisories when needed.
+    </div>
+  </section>
+
+  <main>
+    <div class="section-heading">
+      <h2 id="sectionTitle">Latest trailers</h2>
+      <div id="resultCount" class="result-count">Loading trailers...</div>
     </div>
 
-    <div id="status">Loading trailers...</div>
-
-    <section id="trailerGrid" class="grid"></section>
+    <div id="trailerGrid" class="grid" aria-live="polite">
+      <div class="loading">Loading trailers...</div>
+    </div>
   </main>
 
+  <div id="playerModal" class="player-modal" role="dialog" aria-modal="true" aria-label="Trailer player">
+    <div class="player-box">
+      <div class="player-top">
+        <div id="playerTitle" class="player-title">Now playing</div>
+        <button id="closePlayer" class="close-player" type="button" aria-label="Close player">×</button>
+      </div>
+      <div class="player-frame-wrap">
+        <iframe
+          id="playerFrame"
+          title="YouTube trailer player"
+          src="about:blank"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    TrailerDrop · Trailers are played using YouTube's embedded player.
+    TrailerDrop is an independent trailer discovery website.
+    Videos are hosted by YouTube and belong to their respective owners.
+    <br>
+    Ratings and metadata may be incomplete or estimated.
   </footer>
 
   <script>
+    "use strict";
+
     const DATA_URL = "./trailers.json";
 
-    const ALLOWED_RATINGS = new Set(["G", "PG", "PG-13"]);
+    const EXCLUDED_RATINGS = new Set(["NC-17", "X"]);
+
+    // These help remove obvious irrelevant search results.
+    // They are not a guarantee that every result is correctly classified.
+    const EXCLUDED_TITLE_PATTERNS = [
+      /\blego\s*mario\b/i,
+      /\bmario\s*(gameplay|walkthrough|speedrun|level|mod)\b/i,
+      /\bgameplay\b/i,
+      /\bwalkthrough\b/i,
+      /\bspeedrun\b/i,
+      /\blevel\s*\d+\b/i,
+      /\bfull\s*game\b/i,
+      /\bno commentary\b/i,
+      /\blivestream\b/i,
+      /\blive stream\b/i,
+      /\bgameplay trailer reaction\b/i,
+      /\bfan[- ]made\b/i,
+      /\bfan edit\b/i,
+      /\bparody\b/i,
+      /\bconcept trailer\b/i,
+      /\bshorts?\b/i,
+      /#shorts\b/i
+    ];
+
+    const EXCLUDED_DESCRIPTION_PATTERNS = [
+      /\bgameplay walkthrough\b/i,
+      /\bfull gameplay\b/i,
+      /\bno commentary gameplay\b/i,
+      /\bshorts channel\b/i
+    ];
+
+    const state = {
+      videos: [],
+      category: "all",
+      search: "",
+      sort: "newest",
+      rating: "all",
+      loading: true,
+      error: ""
+    };
 
     const grid = document.getElementById("trailerGrid");
-    const status = document.getElementById("status");
-    const searchInput = document.getElementById("search");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const sortFilter = document.getElementById("sortFilter");
-
-    const playerSection = document.getElementById("playerSection");
+    const count = document.getElementById("resultCount");
+    const sectionTitle = document.getElementById("sectionTitle");
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const ratingSelect = document.getElementById("ratingSelect");
+    const modal = document.getElementById("playerModal");
+    const playerFrame = document.getElementById("playerFrame");
     const playerTitle = document.getElementById("playerTitle");
-    const videoContainer = document.getElementById("videoContainer");
     const closePlayerButton = document.getElementById("closePlayer");
 
-    let allVideos = [];
-
-    function normalizeRating(rating) {
-      if (!rating) return "";
-
-      return String(rating)
-        .trim()
-        .toUpperCase()
-        .replace(/\s+/g, "");
-    }
-
-    function getRating(video) {
-      return normalizeRating(
-        video.rating ??
-        video.us_rating ??
-        video.certification ??
-        ""
-      );
-    }
-
-    function getRatingStatus(video) {
-      return String(
-        video.rating_status ??
-        video.ratingStatus ??
-        (video.estimated ? "estimated" : "confirmed")
-      ).toLowerCase();
+    function cleanText(value) {
+      return String(value ?? "").trim();
     }
 
     function getCategory(video) {
-      return String(video.category || "Movies").trim();
+      const raw = cleanText(video.category || video.type).toLowerCase();
+
+      if (
+        raw.includes("gaming") ||
+        raw.includes("game") ||
+        raw.includes("videogame") ||
+        raw.includes("video game")
+      ) {
+        return "gaming";
+      }
+
+      return "movie";
     }
 
     function isGaming(video) {
-      return getCategory(video).toLowerCase() === "gaming";
+      return getCategory(video) === "gaming";
     }
 
-    function isAllowed(video) {
-      // Gaming trailers do not need movie ratings.
-      if (isGaming(video)) return true;
+    function getRating(video) {
+      const raw = cleanText(video.rating || video.mpaa_rating || video.certification)
+        .toUpperCase()
+        .replace(/\s+/g, "");
 
-      const rating = getRating(video);
-      const ratingStatus = getRatingStatus(video);
-
-      // Reject missing or unsupported ratings.
-      if (!ALLOWED_RATINGS.has(rating)) return false;
-
-      // Only accept confirmed or explicitly estimated ratings.
-      if (
-        ratingStatus !== "confirmed" &&
-        ratingStatus !== "estimated"
-      ) {
-        return false;
+      if (["NOTRATED", "UNRATED", "UNKNOWN", "N/A", "NA", "NONE"].includes(raw)) {
+        return "";
       }
 
-      return true;
-    }
-
-    function getVideoId(video) {
-      const rawId = String(
-        video.id ??
-        video.videoId ??
-        video.youtube_id ??
-        ""
-      ).trim();
-
-      // A standard YouTube video ID contains 11 valid characters.
-      if (/^[a-zA-Z0-9_-]{11}$/.test(rawId)) {
-        return rawId;
-      }
-
-      // Also support YouTube URLs if the JSON contains one.
-      try {
-        const url = new URL(rawId);
-
-        if (
-          url.hostname === "youtu.be" ||
-          url.hostname.endsWith(".youtu.be")
-        ) {
-          const id = url.pathname.split("/").filter(Boolean)[0];
-          return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
-        }
-
-        if (
-          url.hostname.includes("youtube.com") ||
-          url.hostname.includes("youtube-nocookie.com")
-        ) {
-          const id =
-            url.searchParams.get("v") ||
-            url.pathname.match(/\/(?:embed|shorts)\/([a-zA-Z0-9_-]{11})/)?.[1] ||
-            "";
-
-          return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
-        }
-      } catch {
-        // Not a URL.
+      if (["G", "PG", "PG-13", "R", "NC-17", "X"].includes(raw)) {
+        return raw;
       }
 
       return "";
     }
 
-    function getThumbnail(video) {
-      const id = getVideoId(video);
+    function getRatingStatus(video) {
+      const explicitStatus = cleanText(video.rating_status || video.ratingStatus)
+        .toLowerCase();
 
-      return (
-        video.thumbnail ||
-        video.thumbnail_url ||
-        video.image ||
-        (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "")
-      );
-    }
-
-    function getTitle(video) {
-      return String(video.title || "Untitled trailer");
-    }
-
-    function getDate(video) {
-      const value =
-        video.publishedAt ||
-        video.published_at ||
-        video.date ||
-        "";
-
-      const timestamp = Date.parse(value);
-
-      return Number.isNaN(timestamp) ? 0 : timestamp;
-    }
-
-    function closePlayer() {
-      videoContainer.replaceChildren();
-      playerSection.classList.remove("active");
-      playerTitle.textContent = "Now playing";
-    }
-
-    function playTrailer(video) {
-      const id = getVideoId(video);
-
-      if (!id) {
-        alert("This trailer does not have a valid YouTube video ID.");
-        return;
+      if (["unknown", "unrated", "missing"].includes(explicitStatus)) {
+        return "unknown";
       }
 
-      closePlayer();
+      if (
+        ["estimated", "estimate", "inferred"].includes(explicitStatus) ||
+        video.rating_estimated === true
+      ) {
+        return "estimated";
+      }
 
-      playerTitle.textContent = getTitle(video);
+      if (["confirmed", "official"].includes(explicitStatus)) {
+        return "confirmed";
+      }
 
-      const iframe = document.createElement("iframe");
-
-      iframe.src =
-        `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}` +
-        "?autoplay=1&rel=0";
-
-      iframe.title = getTitle(video);
-      iframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; " +
-        "gyroscope; picture-in-picture; web-share";
-      iframe.allowFullscreen = true;
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-
-      videoContainer.appendChild(iframe);
-      playerSection.classList.add("active");
-
-      playerSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+      // Do not pretend a missing rating is confirmed.
+      return getRating(video) ? "confirmed" : "unknown";
     }
 
-    function createBadge(text, className = "") {
-      const badge = document.createElement("span");
-      badge.className = `badge ${className}`.trim();
-      badge.textContent = text;
-      return badge;
-    }
-
-    function createCard(video) {
-      const card = document.createElement("article");
-      card.className = "card";
-
-      const thumbnail = document.createElement("div");
-      thumbnail.className = "thumbnail";
-      thumbnail.tabIndex = 0;
-      thumbnail.setAttribute("role", "button");
-      thumbnail.setAttribute(
-        "aria-label",
-        `Play ${getTitle(video)}`
-      );
-
-      const image = document.createElement("img");
-      image.src = getThumbnail(video);
-      image.alt = `${getTitle(video)} thumbnail`;
-      image.loading = "lazy";
-
-      image.onerror = () => {
-        image.style.display = "none";
-      };
-
-      const overlay = document.createElement("div");
-      overlay.className = "play-overlay";
-
-      const playIcon = document.createElement("span");
-      playIcon.className = "play-icon";
-      playIcon.textContent = "▶";
-
-      overlay.appendChild(playIcon);
-      thumbnail.append(image, overlay);
-
-      thumbnail.addEventListener("click", () => playTrailer(video));
-
-      thumbnail.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          playTrailer(video);
-        }
-      });
-
-      const content = document.createElement("div");
-      content.className = "card-content";
-
-      const title = document.createElement("h2");
-      title.textContent = getTitle(video);
-
-      const badges = document.createElement("div");
-      badges.className = "badges";
-
-      badges.appendChild(createBadge(getCategory(video)));
+    function isAllowed(video) {
+      if (isGaming(video)) {
+        return true;
+      }
 
       const rating = getRating(video);
 
-      if (!isGaming(video) && rating) {
-        badges.appendChild(createBadge(rating, "rating"));
-
-        if (getRatingStatus(video) === "estimated") {
-          badges.appendChild(
-            createBadge("Estimated rating", "estimated")
-          );
-        }
+      // Block only these movie ratings, not R.
+      if (EXCLUDED_RATINGS.has(rating)) {
+        return false;
       }
 
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "watch-button";
-      button.textContent = "▶ Watch trailer here";
-      button.addEventListener("click", () => playTrailer(video));
+      // Unknown ratings are allowed and labeled Unrated.
+      // G, PG, PG-13 and R are all allowed.
+      return true;
+    }
 
-      content.append(title, badges, button);
-      card.append(thumbnail, content);
+    function hasExcludedTitle(video) {
+      const title = cleanText(video.title);
+      const description = cleanText(video.description);
+      const combined = title + " " + description;
+
+      // Do not apply movie-title exclusions to gaming trailers.
+      if (isGaming(video)) {
+        return EXCLUDED_TITLE_PATTERNS.some(pattern => pattern.test(title)) ||
+          EXCLUDED_DESCRIPTION_PATTERNS.some(pattern => pattern.test(description));
+      }
+
+      return EXCLUDED_TITLE_PATTERNS.some(pattern => pattern.test(title)) ||
+        EXCLUDED_DESCRIPTION_PATTERNS.some(pattern => pattern.test(description));
+    }
+
+    function getVideoId(video) {
+      const direct = cleanText(video.video_id || video.youtube_id || video.id);
+
+      if (/^[a-zA-Z0-9_-]{11}$/.test(direct)) {
+        return direct;
+      }
+
+      const url = cleanText(
+        video.youtube_url ||
+        video.url ||
+        video.link ||
+        video.embed_url
+      );
+
+      if (!url) return "";
+
+      try {
+        const parsed = new URL(url, window.location.href);
+
+        if (parsed.hostname.includes("youtu.be")) {
+          const id = parsed.pathname.split("/").filter(Boolean)[0] || "";
+          return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
+        }
+
+        const v = parsed.searchParams.get("v");
+        if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) {
+          return v;
+        }
+
+        const parts = parsed.pathname.split("/").filter(Boolean);
+        const embedIndex = parts.findIndex(part =>
+          ["embed", "shorts", "live", "v"].includes(part)
+        );
+
+        if (embedIndex >= 0) {
+          const id = parts[embedIndex + 1] || "";
+          return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
+        }
+      } catch {
+        return "";
+      }
+
+      return "";
+    }
+
+    function getThumbnail(video, videoId) {
+      const thumbnail = cleanText(video.thumbnail || video.thumbnail_url);
+
+      if (thumbnail && /^https?:\/\//i.test(thumbnail)) {
+        return thumbnail;
+      }
+
+      return videoId
+        ? `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`
+        : "";
+    }
+
+    function getPublishedDate(video) {
+      const raw = video.published_at || video.publishedAt || video.date || "";
+      const date = new Date(raw);
+
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function formatDate(video) {
+      const date = getPublishedDate(video);
+
+      if (!date) return "Date unavailable";
+
+      return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function getDescription(video) {
+      const description = cleanText(video.description);
+      return description || "Watch the latest trailer.";
+    }
+
+    function getVisibleVideos() {
+      let videos = state.videos.filter(video => {
+        if (!getVideoId(video)) return false;
+        if (!isAllowed(video)) return false;
+        if (hasExcludedTitle(video)) return false;
+
+        if (state.category !== "all" && getCategory(video) !== state.category) {
+          return false;
+        }
+
+        if (!isGaming(video)) {
+          const rating = getRating(video);
+
+          if (state.rating === "unrated" && rating) {
+            return false;
+          }
+
+          if (
+            state.rating !== "all" &&
+            state.rating !== "unrated" &&
+            rating !== state.rating
+          ) {
+            return false;
+          }
+        } else if (state.category === "movie" || state.rating !== "all") {
+          // A movie rating filter should not hide gaming trailers when
+          // the user has explicitly selected Gaming or All.
+          if (state.category === "movie") return false;
+        }
+
+        const searchText = [
+          video.title,
+          video.description,
+          video.channel,
+          video.category
+        ].map(cleanText).join(" ").toLowerCase();
+
+        if (state.search && !searchText.includes(state.search.toLowerCase())) {
+          return false;
+        }
+
+        return true;
+      });
+
+      if (state.sort === "newest") {
+        videos.sort((a, b) =>
+          (getPublishedDate(b)?.getTime() || 0) -
+          (getPublishedDate(a)?.getTime() || 0)
+        );
+      } else if (state.sort === "oldest") {
+        videos.sort((a, b) =>
+          (getPublishedDate(a)?.getTime() || 0) -
+          (getPublishedDate(b)?.getTime() || 0)
+        );
+      } else if (state.sort === "title") {
+        videos.sort((a, b) =>
+          cleanText(a.title).localeCompare(cleanText(b.title))
+        );
+      }
+
+      return videos;
+    }
+
+    function createCard(video) {
+      const videoId = getVideoId(video);
+      const title = cleanText(video.title) || "Untitled trailer";
+      const category = getCategory(video);
+      const gaming = category === "gaming";
+      const rating = getRating(video);
+      const ratingStatus = getRatingStatus(video);
+      const thumbnail = getThumbnail(video, videoId);
+      const channel = cleanText(video.channel || video.channel_title || "YouTube");
+      const description = getDescription(video);
+
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const ratingBadge = gaming
+        ? ""
+        : rating
+          ? `<span class="badge">${escapeHTML(rating)}</span>`
+          : `<span class="badge unrated">Unrated</span>`;
+
+      const estimatedBadge =
+        !gaming && rating && ratingStatus === "estimated"
+          ? `<span class="badge estimated">Estimated</span>`
+          : "";
+
+      card.innerHTML = `
+        <div class="thumbnail-wrap" role="button" tabindex="0"
+             aria-label="Play ${escapeHTML(title)}">
+          ${thumbnail
+            ? `<img class="thumbnail" src="${escapeHTML(thumbnail)}"
+                    alt="${escapeHTML(title)} thumbnail"
+                    loading="lazy" referrerpolicy="no-referrer">`
+            : `<div class="thumbnail"></div>`}
+          <div class="play-overlay"><span class="play-icon">▶</span></div>
+          <div class="badges">
+            <span class="badge ${gaming ? "gaming" : "movie"}">
+              ${gaming ? "GAMING" : "MOVIE"}
+            </span>
+            ${ratingBadge}
+            ${estimatedBadge}
+          </div>
+        </div>
+
+        <div class="card-content">
+          <h3>${escapeHTML(title)}</h3>
+          <p class="card-description">${escapeHTML(description)}</p>
+
+          <div class="card-meta">
+            <span>${escapeHTML(channel)}</span>
+            <span>${escapeHTML(formatDate(video))}</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="action-button primary play-button" type="button">
+              ▶ Watch trailer
+            </button>
+            <a class="action-button external-link"
+               href="https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}"
+               target="_blank" rel="noopener noreferrer">
+              YouTube ↗
+            </a>
+          </div>
+        </div>
+      `;
+
+      const play = () => openPlayer(videoId, title);
+
+      const thumbnailWrap = card.querySelector(".thumbnail-wrap");
+      thumbnailWrap.addEventListener("click", play);
+      thumbnailWrap.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          play();
+        }
+      });
+
+      card.querySelector(".play-button").addEventListener("click", play);
+
+      const image = card.querySelector("img.thumbnail");
+      if (image) {
+        image.addEventListener("error", () => {
+          image.style.display = "none";
+        }, { once: true });
+      }
 
       return card;
     }
 
     function render() {
-      const searchTerm = searchInput.value.trim().toLowerCase();
-      const selectedCategory = categoryFilter.value;
-      const sortMode = sortFilter.value;
-
-      let videos = allVideos.filter(isAllowed);
-
-      if (selectedCategory !== "all") {
-        videos = videos.filter(video =>
-          getCategory(video).toLowerCase() ===
-          selectedCategory.toLowerCase()
-        );
-      }
-
-      if (searchTerm) {
-        videos = videos.filter(video =>
-          getTitle(video).toLowerCase().includes(searchTerm)
-        );
-      }
-
-      if (sortMode === "newest") {
-        videos.sort((a, b) => getDate(b) - getDate(a));
-      } else if (sortMode === "oldest") {
-        videos.sort((a, b) => getDate(a) - getDate(b));
-      } else if (sortMode === "title") {
-        videos.sort((a, b) =>
-          getTitle(a).localeCompare(getTitle(b))
-        );
-      }
+      const videos = getVisibleVideos();
 
       grid.replaceChildren();
 
-      if (videos.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent =
-          "No trailers found. Try a different search or category.";
-        grid.appendChild(empty);
-      } else {
-        const fragment = document.createDocumentFragment();
-
-        videos.forEach(video => {
-          fragment.appendChild(createCard(video));
-        });
-
-        grid.appendChild(fragment);
+      if (state.loading) {
+        grid.innerHTML = `<div class="loading">Loading trailers...</div>`;
+        count.textContent = "Loading trailers...";
+        return;
       }
 
-      status.textContent =
-        `${videos.length} trailer${videos.length === 1 ? "" : "s"} found`;
+      if (state.error) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <h3>Couldn't load trailers</h3>
+            <p>${escapeHTML(state.error)}</p>
+            <p>Make sure <code>trailers.json</code> exists beside this file and is valid JSON.</p>
+            <button id="retryButton" type="button">Try again</button>
+          </div>
+        `;
+        count.textContent = "Unavailable";
+        document.getElementById("retryButton").addEventListener("click", loadTrailers);
+        return;
+      }
+
+      const labels = {
+        all: "Latest trailers",
+        movie: "Movie trailers",
+        gaming: "Gaming trailers"
+      };
+
+      sectionTitle.textContent = labels[state.category] || labels.all;
+      count.textContent = `${videos.length} trailer${videos.length === 1 ? "" : "s"}`;
+
+      if (videos.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <h3>No trailers found</h3>
+            <p>Try a different search, category, or rating filter.</p>
+            <button id="resetFilters" type="button">Reset filters</button>
+          </div>
+        `;
+
+        document.getElementById("resetFilters").addEventListener("click", resetFilters);
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      videos.forEach(video => {
+        fragment.appendChild(createCard(video));
+      });
+
+      grid.appendChild(fragment);
+    }
+
+    function openPlayer(videoId, title) {
+      if (!videoId) return;
+
+      playerTitle.textContent = title;
+      playerFrame.src =
+        `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}` +
+        "?autoplay=1&rel=0&controls=1&playsinline=1";
+
+      modal.classList.add("open");
+      document.body.style.overflow = "hidden";
+      closePlayerButton.focus();
+    }
+
+    function closePlayer() {
+      modal.classList.remove("open");
+      playerFrame.src = "about:blank";
+      document.body.style.overflow = "";
+    }
+
+    closePlayerButton.addEventListener("click", closePlayer);
+
+    modal.addEventListener("click", event => {
+      if (event.target === modal) closePlayer();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && modal.classList.contains("open")) {
+        closePlayer();
+      }
+    });
+
+    searchInput.addEventListener("input", () => {
+      state.search = searchInput.value.trim();
+      render();
+    });
+
+    sortSelect.addEventListener("change", () => {
+      state.sort = sortSelect.value;
+      render();
+    });
+
+    ratingSelect.addEventListener("change", () => {
+      state.rating = ratingSelect.value;
+      render();
+    });
+
+    document.querySelectorAll(".tab").forEach(button => {
+      button.addEventListener("click", () => {
+        state.category = button.dataset.category;
+
+        document.querySelectorAll(".tab").forEach(tab => {
+          const active = tab === button;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-pressed", String(active));
+        });
+
+        // Rating filters apply only to movies. Switching to Gaming
+        // resets a movie-specific rating filter.
+        if (state.category === "gaming" && state.rating !== "all") {
+          state.rating = "all";
+          ratingSelect.value = "all";
+        }
+
+        render();
+      });
+
+      button.setAttribute(
+        "aria-pressed",
+        String(button.dataset.category === "all")
+      );
+    });
+
+    function resetFilters() {
+      state.category = "all";
+      state.search = "";
+      state.sort = "newest";
+      state.rating = "all";
+
+      searchInput.value = "";
+      sortSelect.value = "newest";
+      ratingSelect.value = "all";
+
+      document.querySelectorAll(".tab").forEach(tab => {
+        const active = tab.dataset.category === "all";
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-pressed", String(active));
+      });
+
+      render();
     }
 
     async function loadTrailers() {
-      try {
-        status.textContent = "Loading trailers...";
+      state.loading = true;
+      state.error = "";
+      render();
 
-        const response = await fetch(
-          `${DATA_URL}?t=${Date.now()}`
-        );
+      try {
+        const response = await fetch(`${DATA_URL}?t=${Date.now()}`, {
+          cache: "no-store"
+        });
 
         if (!response.ok) {
-          throw new Error(`Could not load trailers.json (${response.status})`);
+          throw new Error(`Request failed (${response.status}).`);
         }
 
         const data = await response.json();
 
-        const videos = Array.isArray(data)
-          ? data
-          : data.videos;
+        // Supports the list format written by update_trailers.py,
+        // plus common object formats.
+        let videos;
 
-        if (!Array.isArray(videos)) {
-          throw new Error("The JSON file does not contain a videos array.");
+        if (Array.isArray(data)) {
+          videos = data;
+        } else if (Array.isArray(data.videos)) {
+          videos = data.videos;
+        } else if (Array.isArray(data.trailers)) {
+          videos = data.trailers;
+        } else if (Array.isArray(data.results)) {
+          videos = data.results;
+        } else {
+          throw new Error("The JSON file doesn't contain a trailer list.");
         }
 
-        allVideos = videos.filter(video => {
-          return video && typeof video === "object" && getVideoId(video);
+        // Remove duplicate YouTube videos while keeping the first entry.
+        const seen = new Set();
+
+        state.videos = videos.filter(video => {
+          if (!video || typeof video !== "object") return false;
+
+          const id = getVideoId(video);
+          if (!id || seen.has(id)) return false;
+
+          seen.add(id);
+          return true;
         });
 
+        state.loading = false;
+        state.error = "";
         render();
-
-        if (data.updated) {
-          status.textContent += ` · Updated ${data.updated}`;
-        }
       } catch (error) {
-        console.error("TrailerDrop loading error:", error);
-
-        status.textContent =
-          "Could not load trailers. Check that trailers.json exists and is valid.";
-
-        grid.replaceChildren();
-
-        const message = document.createElement("div");
-        message.className = "empty";
-        message.textContent =
-          "Trailers could not be loaded. Please try refreshing the page.";
-        grid.appendChild(message);
+        state.loading = false;
+        state.error = error instanceof Error
+          ? error.message
+          : "An unexpected error occurred.";
+        render();
       }
     }
-
-    searchInput.addEventListener("input", render);
-    categoryFilter.addEventListener("change", render);
-    sortFilter.addEventListener("change", render);
-
-    closePlayerButton.addEventListener("click", closePlayer);
-
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape") {
-        closePlayer();
-      }
-    });
 
     loadTrailers();
   </script>
