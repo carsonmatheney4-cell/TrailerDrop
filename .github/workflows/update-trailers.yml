@@ -22,6 +22,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+
     steps:
       - name: Get repository files
         uses: actions/checkout@v4
@@ -36,8 +37,8 @@ jobs:
       - name: Run trailer updater
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          YOUTUBE_BACKFILL: ${{ github.event_name == 'workflow_dispatch' && inputs.backfill || false }}
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          YOUTUBE_BACKFILL: ${{ github.event_name == 'workflow_dispatch' && inputs.backfill || false }}
         run: python update_trailers.py
 
       - name: Save updated trailer data
