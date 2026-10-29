@@ -1,6 +1,15 @@
 {
-  "updated": "2026-10-29T00:33:23.041150+00:00",
+  "updated": "2026-10-29T00:39:28.430816+00:00",
   "videos": [
+    {
+      "id": "VME_1Vro9kw",
+      "title": "HYPERyuki: Snowboard Syndicate | Official Nintendo Switch 2 Trailer",
+      "url": "https://www.youtube.com/watch?v=VME_1Vro9kw",
+      "thumbnail": "https://i.ytimg.com/vi/VME_1Vro9kw/hqdefault.jpg",
+      "published": "2026-10-29T00:37:27+00:00",
+      "category": "Gaming",
+      "source": "NexusGamingHQ"
+    },
     {
       "id": "oUk3bR7g_m8",
       "title": "Cairn - Official Nintendo Switch 2 Reveal Trailer | Nintendo Direct September 2026",
@@ -272,6 +281,16 @@
       "source": "Nintendo of America"
     },
     {
+      "id": "0Zq5fL6BQjw",
+      "title": "The Host - Official Trailer | 4K Restoration in Theaters November 21 + 23 | Directed by Bong Joon Ho",
+      "url": "https://www.youtube.com/watch?v=0Zq5fL6BQjw",
+      "thumbnail": "https://i.ytimg.com/vi/0Zq5fL6BQjw/hqdefault.jpg",
+      "published": "2026-10-28T18:59:38+00:00",
+      "category": "Movie Trailers",
+      "source": "ComingSoon",
+      "rating": "PG-13"
+    },
+    {
       "id": "8UZJpt19GSs",
       "title": "Mikey The Hero: Mania; Final Gameplay trailer",
       "url": "https://www.youtube.com/watch?v=8UZJpt19GSs",
@@ -297,6 +316,16 @@
       "published": "2026-10-28T18:24:48+00:00",
       "category": "Gaming",
       "source": "Devil of PC game"
+    },
+    {
+      "id": "0yeAROPGl0k",
+      "title": "The Other Sister | Official Trailer | Family Secrets Turn Deadly | New Movie Now Streaming [4K]",
+      "url": "https://www.youtube.com/watch?v=0yeAROPGl0k",
+      "thumbnail": "https://i.ytimg.com/vi/0yeAROPGl0k/hqdefault.jpg",
+      "published": "2026-10-28T18:00:10+00:00",
+      "category": "Movie Trailers",
+      "source": "Maverick Movies",
+      "rating": "PG-13"
     },
     {
       "id": "eSL5Np0yu1A",
@@ -866,6 +895,16 @@
       "source": "Yooca:Your Life"
     },
     {
+      "id": "YXpjG30DHPA",
+      "title": "Hexed (2026) | Official Trailer | Disney",
+      "url": "https://www.youtube.com/watch?v=YXpjG30DHPA",
+      "thumbnail": "https://i.ytimg.com/vi/YXpjG30DHPA/hqdefault.jpg",
+      "published": "2026-10-28T08:30:05+00:00",
+      "category": "Movie Trailers",
+      "source": "Movies Trailers ",
+      "rating": "PG"
+    },
+    {
       "id": "mJuIsFQEWQg",
       "title": "Minecraft's Switch 2 Trailer Tours Every Biome In One Sweep",
       "url": "https://www.youtube.com/watch?v=mJuIsFQEWQg",
@@ -1242,6 +1281,16 @@
       "published": "2026-10-27T16:00:09+00:00",
       "category": "Gaming",
       "source": "Snuffysam"
+    },
+    {
+      "id": "ovKxR7E4f0s",
+      "title": "UNSTOPPABLE Trailer (2026)",
+      "url": "https://www.youtube.com/watch?v=ovKxR7E4f0s",
+      "thumbnail": "https://i.ytimg.com/vi/ovKxR7E4f0s/hqdefault.jpg",
+      "published": "2026-10-27T15:30:29+00:00",
+      "category": "Movie Trailers",
+      "source": "Animation Movie Trailers",
+      "rating": "PG-13"
     },
     {
       "id": "ilKsaz5wloQ",
@@ -1934,7 +1983,7 @@
       "thumbnail": "https://i.ytimg.com/vi/jq5oCjhQtIc/hqdefault.jpg",
       "published": "2026-10-22T16:00:07+00:00",
       "category": "Gaming",
-      "source": "GeekTyrant"
+      "source": "Amazon MGM Studios"
     },
     {
       "id": "qgJBFa952mY",
@@ -2286,6 +2335,16 @@
       "published": "2026-10-13T18:52:14+00:00",
       "category": "Gaming",
       "source": "LevelUpHQ"
+    },
+    {
+      "id": "YBhgErH84Z0",
+      "title": "NARNIA: THE MAGICIAN'S NEPHEW | Official Trailer (2027) 4K",
+      "url": "https://www.youtube.com/watch?v=YBhgErH84Z0",
+      "thumbnail": "https://i.ytimg.com/vi/YBhgErH84Z0/hqdefault.jpg",
+      "published": "2026-10-13T18:06:44+00:00",
+      "category": "Movie Trailers",
+      "source": "JoBlo",
+      "rating": "PG"
     },
     {
       "id": "gDJ-ini7fF0",
