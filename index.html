@@ -637,22 +637,17 @@
     const EXCLUDED_RATINGS = new Set(["NC-17", "X"]);
 
     const EXCLUDED_TITLE_PATTERNS = [
-      /\blego\s*mario\b/i,
-      /\bmario\s*(gameplay|walkthrough|speedrun|level|mod)\b/i,
-      /\bgameplay\b/i,
-      /\bwalkthrough\b/i,
-      /\bspeedrun\b/i,
-      /\bfull\s*game\b/i,
-      /\bno commentary\b/i,
-      /\blivestream\b/i,
-      /\blive stream\b/i,
-      /\bfan[- ]made\b/i,
-      /\bfan edit\b/i,
-      /\bparody\b/i,
-      /\bconcept trailer\b/i,
-      /\bshorts?\b/i,
-      /#shorts\b/i
-    ];
+  /\bwalkthrough\b/i,
+  /\bspeedrun\b/i,
+  /\bfull\s*game\b/i,
+  /\bno commentary\b/i,
+  /\blivestream\b/i,
+  /\blive stream\b/i,
+  /\bfan edit\b/i,
+  /\bparody\b/i,
+  /\bshorts?\b/i,
+  /#shorts\b/i
+];
 
     const state = {
       videos: [],
