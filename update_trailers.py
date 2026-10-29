@@ -120,7 +120,6 @@ def tmdb_request(endpoint, params=None):
 # JSON FILE
 # ============================================================
 
-
 def load_trailers():
     if not TRAILERS_FILE.exists():
         return []
@@ -129,6 +128,7 @@ def load_trailers():
         with TRAILERS_FILE.open("r", encoding="utf-8") as file:
             content = file.read()
 
+        # DEBUG: Inspect the actual contents read from the file.
         print("LAST 100 CHARACTERS:", repr(content[-100:]))
         print("LAST CHARACTER:", repr(content[-1:]))
         print("ENDS WITH ]:", content.rstrip().endswith("]"))
@@ -146,28 +146,6 @@ def load_trailers():
             print(f"Line: {error.lineno}")
             print(f"Column: {error.colno}")
             print(f"Character position: {error.pos}")
-            print(f"File length: {len(content)} characters")
-            print("\nText surrounding the error:")
-            print(repr(content[start:end]))
-            print("\n========== END JSON ERROR DETAILS ==========")
-
-            raise
-
-        if isinstance(data, list):
-            return data
-
-        if isinstance(data, dict):
-            for key in ("videos", "trailers", "results"):
-                if isinstance(data.get(key), list):
-                    return data[key]
-
-        raise ValueError("Unrecognized trailers.json structure.")
-
-    except (OSError, json.JSONDecodeError, ValueError) as error:
-        raise RuntimeError(
-            f"Could not safely load trailers.json: {error}"
-        ) from error
-
             print(f"File length: {len(content)} characters")
             print("\nText surrounding the error:")
             print(repr(content[start:end]))
@@ -427,7 +405,9 @@ def get_us_certifications(movie_id):
             continue
 
         for release in country.get("release_dates", []):
-            cert = (release.get("certification") or "").strip().upper()
+            cert = (
+                release.get("certification") or ""
+            ).strip().upper()
 
             if cert:
                 certifications.append(cert)
@@ -499,7 +479,9 @@ def validate_video(video, detail):
         return None, "no confident TMDB movie match"
 
     cleaned_title = get_movie_search_title(title)
-    tmdb_title = movie.get("title") or movie.get("original_title") or ""
+    tmdb_title = (
+        movie.get("title") or movie.get("original_title") or ""
+    )
 
     if similarity(cleaned_title, tmdb_title) < MIN_TITLE_SIMILARITY:
         return None, "movie title mismatch"
